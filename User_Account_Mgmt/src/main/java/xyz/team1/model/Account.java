@@ -1,9 +1,6 @@
 package xyz.team1.model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -32,7 +30,7 @@ public class Account {
     @Column(nullable = false)
     private AccountType accountType;
     
-    private LocalDateTime accountCreationDate;
+    private LocalDateTime accountCreationDateTime;
 
     // We may need to store account holder details in another table.
     @Column(nullable = false, length = 50)
@@ -46,19 +44,6 @@ public class Account {
 
     @Column(nullable = false)
     private String address;
-
-    public Account(Long accountId, String accountNo, Double balance, AccountType accountType,
-            LocalDateTime accountCreationDate, String fullName, String email, Long phoneNo, String address) {
-        this.accountId = accountId;
-        this.accountNo = accountNo;
-        this.balance = balance;
-        this.accountType = accountType;
-        this.accountCreationDate = LocalDateTime.now();
-        this.fullName = fullName;
-        this.email = email;
-        this.phoneNo = phoneNo;
-        this.address = address;
-    }
 
     public Long getAccountId() {
         return accountId;
@@ -93,11 +78,11 @@ public class Account {
     }
 
     public LocalDateTime getAccountCreationDate() {
-        return accountCreationDate;
+        return accountCreationDateTime;
     }
 
-    public void setAccountCreationDate(LocalDateTime accountCreationDate) {
-        this.accountCreationDate = accountCreationDate;
+    public void setAccountCreationDate(LocalDateTime accountCreationDateTime) {
+        this.accountCreationDateTime = accountCreationDateTime;
     }
 
     public String getFullName() {
@@ -132,5 +117,10 @@ public class Account {
         this.address = address;
     }  
 
+    @PrePersist
+    public void prePersistAccountCreationDateTime() {
+        // Set the account creation date to the current system date and time
+        accountCreationDateTime = LocalDateTime.now();
+    }
     
 }

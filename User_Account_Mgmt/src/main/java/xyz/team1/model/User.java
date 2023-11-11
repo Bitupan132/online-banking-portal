@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.CascadeType;
 
 @Entity
 @Table(name = "User_Table")
@@ -24,7 +25,7 @@ public class User {
     @Column(nullable = false, length = 30)
     private String password;
 
-    @OneToOne
+    @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "account_id")
     private Account account;
 
@@ -49,7 +50,7 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
-    @JsonIgnore
+    // @JsonIgnore
     public String getPassword() {
         return password;
     }

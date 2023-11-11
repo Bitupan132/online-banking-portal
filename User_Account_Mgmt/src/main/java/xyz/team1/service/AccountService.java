@@ -13,10 +13,6 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    // public AccountService(AccountRepository accountRepository) {
-    //     this.accountRepository = accountRepository;
-    // }
-
     public List<Account> getAll() {
         return accountRepository.findAll();
     }
