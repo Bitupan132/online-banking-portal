@@ -18,10 +18,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 30)
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private String password;
 
     @OneToOne
