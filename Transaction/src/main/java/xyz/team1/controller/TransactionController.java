@@ -24,8 +24,12 @@ public class TransactionController {
         return transactionService.getAllTransaction();
     }
     @PostMapping(value="/add")
-    public Transaction addTransaction(@RequestBody Transaction transaction) {
+    private Transaction addTransaction(@RequestBody Transaction transaction) {
         return transactionService.addTransaction(transaction);
+    }
+    @GetMapping("/getAccountForId")
+    private String getAccountForId(){
+        return transactionService.getAccountFromUserAccountMgmt(Long.valueOf(1));
     }
     
 }

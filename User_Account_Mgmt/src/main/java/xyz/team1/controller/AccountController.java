@@ -26,4 +26,8 @@ public class AccountController {
     private Account addAccount(@RequestBody Account account){
         return accountService.addAccount(account);
     }
+    @GetMapping("/getAccountForId")
+    private Account getAccountrId(){
+        return accountService.getAccountById(Long.valueOf(1));
+    }
 }
