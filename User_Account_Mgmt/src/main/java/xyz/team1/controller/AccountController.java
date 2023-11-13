@@ -4,12 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,15 +32,22 @@ public class AccountController {
     }
 
     @GetMapping("/getAccountForId")
-    private Account getAccountrId() {
+    private Account getAccountForId() {
         return accountService.getAccountById(Long.valueOf(1));
     }
 
-    @PatchMapping("/updateBalanceForAccountId")
-    private String updateBalanceForAccountId(@RequestBody Map<String, Object> requestData,
-            @RequestHeader(value = "Addition-Flag", defaultValue = "true") boolean isAddition) {
-        Long accountId = (Long) requestData.get("accountId");
-        Double transferAmmount = (Double) requestData.get("transferAmmount");
-        return accountService.updateBalanceForAccountId(accountId, transferAmmount, isAddition);
+    @PostMapping("/updateBalanceForTransaction")
+    private ResponseEntity<String> updateBalanceForTransaction(@RequestBody Map<String, Object> requestData) {
+        Long senderAccountId = Long.valueOf(requestData.get("senderAccountId").toString());
+        Long receiverAccountId = Long.valueOf(requestData.get("receiverAccountId").toString());
+        Double transferAmount = Double.valueOf(requestData.get("transferAmount").toString());
+
+        try {
+            accountService.updateBalanceForTransaction(senderAccountId, receiverAccountId, transferAmount);
+            return ResponseEntity.ok("Balance updated successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating balance. " + e.getLocalizedMessage());
+        }
     }
 }

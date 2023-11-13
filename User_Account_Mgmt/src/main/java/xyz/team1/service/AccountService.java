@@ -5,8 +5,10 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import xyz.team1.constants.Constants;
+import xyz.team1.exceptions.AccountNotFoundException;
+import xyz.team1.exceptions.InsufficientBalanceException;
 import xyz.team1.model.Account;
 import xyz.team1.repository.AccountRepository;
 
@@ -26,36 +28,38 @@ public class AccountService {
     public Account getAccountById(Long accountId) {
         return accountRepository.findById(accountId).orElse(null);
     }
+    
+    public void updateBalanceForTransaction(Long senderAccountId, Long receiverAccountId, Double transferAmount) throws RuntimeException{
+        Optional<Account> receiverAccountOptional = accountRepository.findById(receiverAccountId);
+        Optional<Account> senderAccountOptional = accountRepository.findById(senderAccountId);
 
-    public String updateBalanceForAccountId(Account account) {
-        Optional<Account> optionalAccountFromDb = accountRepository.findById(account.getAccountId());
-        if(optionalAccountFromDb.isEmpty()){
-            return Constants.failureMessage;
+        if(receiverAccountOptional.isEmpty()){
+            throw new AccountNotFoundException("Incorrect Account id. Account not found for account id: " + receiverAccountId);
         }
-        Account accountFromDb = optionalAccountFromDb.get();
-        accountFromDb.setBalance(account.getBalance());
-        accountRepository.save(accountFromDb);
-        return Constants.successMessage;
+        if(senderAccountOptional.isEmpty()){
+            throw new AccountNotFoundException("Incorrect Account id. Account not found for account id: " + senderAccountId);
+        }
+
+        Account receiverAccount = receiverAccountOptional.get();
+        Account senderAccount = senderAccountOptional.get();
+
+        Double senderFinalBalance = senderAccount.getBalance() - transferAmount;
+
+        if(senderFinalBalance<0){
+            throw new InsufficientBalanceException(
+                        "Insufficient balance for account no: " + senderAccount.getAccountNo());
+        }
+
+        receiverAccount.setBalance(receiverAccount.getBalance()+transferAmount);
+        senderAccount.setBalance(senderFinalBalance);
+
+        saveSenderAndReceiverAccounts(senderAccount,receiverAccount);
     }
 
-    public String updateBalanceForAccountId(Long accountId, Double transferAmmount, boolean isAddition) {
-        Optional<Account> optionalAccountFromDb = accountRepository.findById(accountId);
-        if(optionalAccountFromDb.isEmpty()){
-            return Constants.failureMessage;
-        }
-        Account accountFromDb = optionalAccountFromDb.get();
-        if (isAddition) {
-            accountFromDb.setBalance(accountFromDb.getBalance() + transferAmmount);
-        } else {
-            Double finalBalance = accountFromDb.getBalance() - transferAmmount;
-            if(finalBalance<0){
-                return Constants.failureMessage;
-            }
-            accountFromDb.setBalance(finalBalance);
-        }
-        accountRepository.save(accountFromDb);
-        return Constants.successMessage;
+    @Transactional
+    public void saveSenderAndReceiverAccounts(Account senderAccount, Account receiverAccount) throws RuntimeException{
+            accountRepository.save(senderAccount);
+            accountRepository.save(receiverAccount);
     }
-
 
 }
