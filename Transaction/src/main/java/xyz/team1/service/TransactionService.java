@@ -1,11 +1,18 @@
 package xyz.team1.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-
 
 import xyz.team1.constants.Constants;
 import xyz.team1.model.Transaction;
@@ -23,16 +30,36 @@ public class TransactionService {
         return transactionRepository.findAll();
     }
 
-    public Transaction addTransaction(Transaction transaction) {
-        //handle balance changes in the sender and receiver account.
-        //and also what if save fails and you update the balance changes.
-        return transactionRepository.save(transaction);
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity<String> addTransaction(Transaction transaction) {
+        try {
+            updateBalanceForTransaction(transaction.getSenderAccountId(), transaction.getReceiverAccountId(),
+                    transaction.getAmount());
+            transactionRepository.save(transaction);
+            return ResponseEntity.ok("Transaction successful!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Transaction Failed! " + e.getMessage());
+        }
     }
 
-    public String getAccountFromUserAccountMgmt(Long id){
-        String data = restTemplate.getForObject(Constants.userAccountMgmtUrl + "/account/getAccountForId", String.class);
-        return data;
+    public void updateBalanceForTransaction(Long senderAccountId, Long receiverAccountId,
+            Double transferAmount) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("senderAccountId", senderAccountId);
+        requestBody.put("receiverAccountId", receiverAccountId);
+        requestBody.put("transferAmount", transferAmount);
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        restTemplate.postForEntity(Constants.userAccountMgmtUrl + "/account/updateBalanceForTransaction", requestEntity,
+                String.class);
     }
 
-
+    public String getAccountForId(Long id) {
+        return restTemplate.getForObject(Constants.userAccountMgmtUrl + "/account/getAccountForId", String.class);
+    }
 }
