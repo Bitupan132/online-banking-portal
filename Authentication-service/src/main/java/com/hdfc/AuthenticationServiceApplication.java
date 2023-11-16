@@ -1,4 +1,4 @@
-package xyz.team1;
+package com.hdfc;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,10 +6,11 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class UserAccountMgmtApplication {
+public class AuthenticationServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(UserAccountMgmtApplication.class, args);
+		SpringApplication.run(AuthenticationServiceApplication.class, args);
+
 	}
 
 }

@@ -16,7 +16,7 @@ import xyz.team1.model.Account;
 import xyz.team1.service.AccountService;
 
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/user/account")
 public class AccountController {
     @Autowired
     private AccountService accountService;
