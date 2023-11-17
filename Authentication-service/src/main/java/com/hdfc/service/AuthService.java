@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import com.hdfc.constants.Constants;
 import com.hdfc.dto.User;
 
 @Component
@@ -19,13 +20,13 @@ public class AuthService {
 	@Autowired
 	private JwtService jwtService;
 	
-	static final String USER_URL_MS="http://localhost:8877/user/";
+	// static final String USER_URL_MS="http://localhost:8877/user";
 
 	public String saveUser(User user) {
 		String response =null;
 		try {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
-			User newUser = restTemplate.postForObject(USER_URL_MS+"add", user, User.class);
+			User newUser = restTemplate.postForObject(Constants.USER_URL_MS+"/add", user, User.class);
 			if(newUser!=null) {
 				response = "User is registered successfully";
 			}

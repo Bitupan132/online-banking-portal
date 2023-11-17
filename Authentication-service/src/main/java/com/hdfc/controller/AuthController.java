@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import com.hdfc.service.AuthService;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin("*")
 public class AuthController {
 	
 	@Autowired
@@ -30,14 +32,23 @@ public class AuthController {
 	
 	@PostMapping("/register")
 	public String registerUser(@RequestBody User user) {
+		System.out.println("Bitupan"+user);
 		return authService.saveUser(user);
 	}
 	
 	@PostMapping("/token")
 	public String getToken(@RequestBody AuthRequest authRequest) {
-		Authentication authenticate = authenticationManager.
+		System.out.println("Bitupan"+authRequest.getUsername()+authRequest.getPassword());
+		Authentication authenticate;
+		try {
+			authenticate = authenticationManager.
 				authenticate(new UsernamePasswordAuthenticationToken(
 						authRequest.getUsername(), authRequest.getPassword()));
+		} catch (Exception e) {
+			System.out.println(e.getLocalizedMessage());
+			return e.getLocalizedMessage();
+		}
+		
 		if(authenticate.isAuthenticated()) {
 			return authService.generateToken(authRequest.getUsername());
 		}else {

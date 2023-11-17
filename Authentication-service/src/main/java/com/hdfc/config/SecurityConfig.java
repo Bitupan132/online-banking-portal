@@ -19,7 +19,6 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 	
 	@Bean
-    //authentication
     public UserDetailsService userDetailsService() {
 
         return new CustomUserDetailsService();
