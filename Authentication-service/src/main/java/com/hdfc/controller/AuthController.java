@@ -32,13 +32,11 @@ public class AuthController {
 	
 	@PostMapping("/register")
 	public String registerUser(@RequestBody User user) {
-		System.out.println("Bitupan"+user);
 		return authService.saveUser(user);
 	}
 	
 	@PostMapping("/token")
-	public String getToken(@RequestBody AuthRequest authRequest) {
-		System.out.println("Bitupan"+authRequest.getUsername()+authRequest.getPassword());
+	public String getToken(@RequestBody AuthRequest authRequest) throws Exception {
 		Authentication authenticate;
 		try {
 			authenticate = authenticationManager.
@@ -46,7 +44,8 @@ public class AuthController {
 						authRequest.getUsername(), authRequest.getPassword()));
 		} catch (Exception e) {
 			System.out.println(e.getLocalizedMessage());
-			return e.getLocalizedMessage();
+			// return e.getLocalizedMessage();
+			throw new Exception(e.getLocalizedMessage());
 		}
 		
 		if(authenticate.isAuthenticated()) {
