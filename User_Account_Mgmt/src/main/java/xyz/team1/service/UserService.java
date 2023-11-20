@@ -23,6 +23,15 @@ public class UserService {
         return userRepository.save(user);
     }
     
+    public boolean checkUser(String account) {
+    	User user = userRepository.findByAccount(account).orElse(null);
+    	if(user==null) {
+    		return true;
+    	}else {
+    		return false;
+    	}
+    }
+    
     public User getUser(String username) {
     	return userRepository.findByUsername(username).orElse(null);
     }

@@ -3,6 +3,7 @@ package xyz.team1.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,34 +18,38 @@ import xyz.team1.service.UserService;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin("*")
 public class UserController {
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private UserService userService;
 
-    @Autowired
-    private AccountRepository Repo;
+	@Autowired
+	private AccountRepository Repo;
 
-    @GetMapping("/getAll")
-    private List<User> getAllUser() {
-        return userService.getAllUser();
-    }
+	@GetMapping("/getAll")
+	private List<User> getAllUser() {
+		return userService.getAllUser();
+	}
 
-    @PostMapping("/add")
-    private User addUser(@RequestBody User user) throws Exception {
-        
-        Account existingAccount = Repo.findByAccountNo(user.getAccount()).orElse(null);
-        if(existingAccount==null) {
-        	throw new Exception("Mentioned Account Doesn't exist");
-        }else {
-        user.setAccount(existingAccount.getAccountNo());
-        userService.addUser(user);
-        return user;
-        }
-    }
-    
-    @GetMapping("/get/{username}")
-    public User findUser(@PathVariable String username) {
+	@PostMapping("/add")
+	private User addUser(@RequestBody User user) throws Exception {
+
+		Account existingAccount = Repo.findByAccountNo(user.getAccount()).orElse(null);
+		if (existingAccount == null) {
+			throw new Exception("Mentioned Account Doesn't exist");
+		} else {
+			if(userService.checkUser(existingAccount.getAccountNo())) {
+			user.setAccount(existingAccount.getAccountNo());
+			userService.addUser(user);
+			return user;}else {
+				throw new Exception("User already exists with given Account");
+			}
+		}
+	}
+
+	@GetMapping("/getUser/{username}")
+	public User findUser(@PathVariable String username) {
 		return userService.getUser(username);
-    	
-    }
+
+	}
 }
