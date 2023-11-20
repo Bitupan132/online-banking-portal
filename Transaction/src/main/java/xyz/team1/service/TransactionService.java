@@ -33,7 +33,7 @@ public class TransactionService {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<String> addTransaction(Transaction transaction) {
         try {
-            updateBalanceForTransaction(transaction.getSenderAccountId(), transaction.getReceiverAccountId(),
+            updateBalanceForTransaction(transaction.getSenderAccountNo(), transaction.getReceiverAccountNo(),
                     transaction.getAmount());
             transactionRepository.save(transaction);
             return ResponseEntity.ok("Transaction successful!");
@@ -43,14 +43,14 @@ public class TransactionService {
         }
     }
 
-    public void updateBalanceForTransaction(Long senderAccountId, Long receiverAccountId,
+    public void updateBalanceForTransaction(String senderAccountNo, String receiverAccountNo,
             Double transferAmount) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("senderAccountId", senderAccountId);
-        requestBody.put("receiverAccountId", receiverAccountId);
+        requestBody.put("senderAccountNo", senderAccountNo);
+        requestBody.put("receiverAccountNo", receiverAccountNo);
         requestBody.put("transferAmount", transferAmount);
 
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);

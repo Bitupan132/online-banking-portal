@@ -25,10 +25,10 @@ public class Transaction {
     private String summary;
 
     @Column(nullable = false)
-    private Long senderAccountId;
+    private String senderAccountNo;
 
     @Column(nullable = false)
-    private Long receiverAccountId;
+    private String receiverAccountNo;
 
     public Long getTransactionId() {
         return transactionId;
@@ -62,20 +62,20 @@ public class Transaction {
         this.summary = summary;
     }
 
-    public Long getSenderAccountId() {
-        return senderAccountId;
+    public String getSenderAccountNo() {
+        return senderAccountNo;
     }
 
-    public void setSenderAccountId(Long senderAccountId) {
-        this.senderAccountId = senderAccountId;
+    public void setSenderAccountNo(String senderAccountNo) {
+        this.senderAccountNo = senderAccountNo;
     }
 
-    public Long getReceiverAccountId() {
-        return receiverAccountId;
+    public String getReceiverAccountNo() {
+        return receiverAccountNo;
     }
 
-    public void setReceiverAccountId(Long receiverAccountId) {
-        this.receiverAccountId = receiverAccountId;
+    public void setReceiverAccountNo(String receiverAccountNo) {
+        this.receiverAccountNo = receiverAccountNo;
     }
 
     // @Column(nullable = false, unique = true, length = 12)
