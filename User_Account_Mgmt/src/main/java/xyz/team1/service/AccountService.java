@@ -17,6 +17,9 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private UserService userService;
+
     public List<Account> getAll() {
         return accountRepository.findAll();
     }
@@ -29,15 +32,15 @@ public class AccountService {
         return accountRepository.findById(accountId).orElse(null);
     }
     
-    public void updateBalanceForTransaction(Long senderAccountId, Long receiverAccountId, Double transferAmount) throws RuntimeException{
-        Optional<Account> receiverAccountOptional = accountRepository.findById(receiverAccountId);
-        Optional<Account> senderAccountOptional = accountRepository.findById(senderAccountId);
+    public void updateBalanceForTransaction(String senderAccountNo, String receiverAccountNo, Double transferAmount) throws RuntimeException{
+        Optional<Account> receiverAccountOptional = accountRepository.findByAccountNo(receiverAccountNo);
+        Optional<Account> senderAccountOptional = accountRepository.findByAccountNo(senderAccountNo);
 
         if(receiverAccountOptional.isEmpty()){
-            throw new AccountNotFoundException("Incorrect Account id. Account not found for account id: " + receiverAccountId);
+            throw new AccountNotFoundException("Incorrect Account no. Account not found for account no: " + receiverAccountNo);
         }
         if(senderAccountOptional.isEmpty()){
-            throw new AccountNotFoundException("Incorrect Account id. Account not found for account id: " + senderAccountId);
+            throw new AccountNotFoundException("Incorrect Account no. Account not found for account no: " + senderAccountNo);
         }
 
         Account receiverAccount = receiverAccountOptional.get();
@@ -60,6 +63,11 @@ public class AccountService {
     public void saveSenderAndReceiverAccounts(Account senderAccount, Account receiverAccount) throws RuntimeException{
             accountRepository.save(senderAccount);
             accountRepository.save(receiverAccount);
+    }
+
+    public Account getAccountForUsername(String username) throws RuntimeException{
+        String accountNo = userService.getAccountNoForUsername(username);
+        return accountRepository.findByAccountNo(accountNo).orElse(null);
     }
 
 }
