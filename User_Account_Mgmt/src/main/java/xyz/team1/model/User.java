@@ -5,8 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -19,17 +17,16 @@ public class User {
     @Column(nullable = false, unique = true, length = 30)
     private String username;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 250)
     private String password;
-
-    @OneToOne()
-    @JoinColumn(name = "account_id")
-    private Account account;
-
     
+    @Column(nullable =false, unique = true)
+    private String account;
+
+    private final String role = "USER";
     public User() {
     }
-    public User(Long userId, String username, String password, Account account) {
+    public User(Long userId, String username, String password, String account) {
         this.userId = userId;
         this.username = username;
         this.password = password;
@@ -50,13 +47,16 @@ public class User {
     public String getPassword() {
         return password;
     }
+    public String getRole() {
+    	return role;
+    }
     public void setPassword(String password) {
         this.password = password;
     }
-    public Account getAccount() {
+    public String getAccount() {
         return account;
     }
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setAccount(String existingAccount) {
+        this.account = existingAccount;
     }
 }
