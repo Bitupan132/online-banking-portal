@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hdfc.constants.Constants;
 import com.hdfc.dto.AuthRequest;
 import com.hdfc.dto.User;
 import com.hdfc.service.AuthService;
@@ -61,7 +62,7 @@ public class AuthController {
 	public String validateToken(@RequestParam String token) {
 		 try {
 			authService.validateToken(token);
-			 return "Token is valid";
+			 return Constants.tokenValidString;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "Token is not validated due to "+e.getMessage();
