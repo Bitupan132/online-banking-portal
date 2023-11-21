@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import xyz.team1.interceptor.FeignClientInterface;
 import xyz.team1.model.Account;
 import xyz.team1.service.AccountService;
 
@@ -21,48 +23,89 @@ import xyz.team1.service.AccountService;
 @RequestMapping("/account")
 @CrossOrigin("*")
 public class AccountController {
-    @Autowired
-    private AccountService accountService;
+	@Autowired
+	private AccountService accountService;
 
-    @GetMapping("/getAll")
-    private List<Account> getAllAccount() {
-        return accountService.getAll();
-    }
+	@Autowired
+	private FeignClientInterface feign;
 
-    @PostMapping("/add")
-    private Account addAccount(@RequestBody Account account) {
-        return accountService.addAccount(account);
-    }
+	@GetMapping("/getAll")
+	private List<Account> getAllAccount(@RequestHeader("Authorization") String authorizationHeader) throws Exception {
+		try {
+			String jwtToken = authorizationHeader.substring(7);
+			String s = feign.validateToken(jwtToken);
+			if ("Token is valid".equals(s)) {
+				return accountService.getAll();
+			}
+			throw new Exception("Token is not valid");
+		} catch (Exception e) {
+			throw new Exception("Token is not valid");
+		}
 
-    @GetMapping("/getAccountForId")
-    private Account getAccountForId() {
-        return accountService.getAccountById(Long.valueOf(1));
-    }
+	}
 
-    @GetMapping("/getAccountForUsername/{username}")
-    private ResponseEntity<?> getAccountForUsername(@PathVariable String username) {
-        try {
-            Account account = accountService.getAccountForUsername(username);
-            return ResponseEntity.ok(account);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error fetching Account Details. " + e.getLocalizedMessage());
+	@PostMapping("/add")
+	private Account addAccount(@RequestBody Account account, @RequestHeader("Authorization") String authorizationHeader)
+			throws Exception {
+		try {
+			String jwtToken = authorizationHeader.substring(7);
+			String s = feign.validateToken(jwtToken);
+			if ("Token is valid".equals(s)) {
+				return accountService.addAccount(account);
+			}
+			throw new Exception("Token is not valid");
+		} catch (Exception e) {
+			throw new Exception("Token is not valid");
+		}
+
+	}
+
+	@GetMapping("/getAccountForUsername/{username}")
+    private Account getAccountForUsername(@PathVariable String username,
+    		@RequestHeader("Authorization") String authorizationHeader) throws Exception {
+		try {
+			String jwtToken = authorizationHeader.substring(7);
+			String s = feign.validateToken(jwtToken);
+			if ("Token is valid".equals(s)) 
+			{
+				try {
+					Account account = accountService.getAccountForUsername(username);
+		            return account;
+				}catch(Exception e) {
+					throw new Exception("Error fetching Account Details");
+				}
+			}
+				throw new Exception("Token is not valid");
+			}catch (Exception e) {
+	            throw new Exception("Token is not valid");
         }
 
     }
 
-    @PostMapping("/updateBalanceForTransaction")
-    private ResponseEntity<String> updateBalanceForTransaction(@RequestBody Map<String, Object> requestData) {
-        String senderAccountNo = requestData.get("senderAccountNo").toString();
-        String receiverAccountNo = requestData.get("receiverAccountNo").toString();
-        Double transferAmount = Double.valueOf(requestData.get("transferAmount").toString());
+	@PostMapping("/updateBalanceForTransaction")
+	private ResponseEntity<String> updateBalanceForTransaction(@RequestBody Map<String, Object> requestData,
+			 @RequestHeader("Authorization") String authorizationHeader)
+					throws Exception {
+				try {
+					String jwtToken = authorizationHeader.substring(7);
+					String s = feign.validateToken(jwtToken);
+					if ("Token is valid".equals(s)) {
+						String senderAccountNo = requestData.get("senderAccountNo").toString();
+						String receiverAccountNo = requestData.get("receiverAccountNo").toString();
+						Double transferAmount = Double.valueOf(requestData.get("transferAmount").toString());
 
-        try {
-            accountService.updateBalanceForTransaction(senderAccountNo, receiverAccountNo, transferAmount);
-            return ResponseEntity.ok("Balance updated successfully!");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error updating balance. " + e.getLocalizedMessage());
-        }
-    }
+						try {
+							accountService.updateBalanceForTransaction(senderAccountNo, receiverAccountNo, transferAmount);
+							return ResponseEntity.ok("Balance updated successfully!");
+						} catch (Exception e) {
+							return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+									.body("Error updating balance. " + e.getLocalizedMessage());
+						}
+					}
+					throw new Exception("Token is not valid");
+				} catch (Exception e) {
+					throw new Exception("Token is not valid");
+				}
+		
+	}
 }

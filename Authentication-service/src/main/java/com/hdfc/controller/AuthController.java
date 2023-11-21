@@ -42,6 +42,7 @@ public class AuthController {
 			authenticate = authenticationManager.
 				authenticate(new UsernamePasswordAuthenticationToken(
 						authRequest.getUsername(), authRequest.getPassword()));
+			System.out.println(authenticate.isAuthenticated());
 		} catch (Exception e) {
 			System.out.println(e.getLocalizedMessage());
 			// return e.getLocalizedMessage();

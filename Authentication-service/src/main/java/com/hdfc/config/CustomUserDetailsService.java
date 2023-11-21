@@ -16,11 +16,10 @@ public class CustomUserDetailsService implements UserDetailsService{
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	// static final String USER_URL_MS="http://localhost:8877/user/get/";
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = restTemplate.getForObject(Constants.USER_URL_MS+"/get/" + username, User.class);
+		User user = restTemplate.getForObject(Constants.USER_URL_MS+"/getUser/" + username, User.class);
 		if (user == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
