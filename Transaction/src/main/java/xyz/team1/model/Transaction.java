@@ -29,8 +29,18 @@ public class Transaction {
 
     @Column(nullable = false)
     private String receiverAccountNo;
+    
+    private Double balance;
 
-    public Long getTransactionId() {
+    public Double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(Double balance) {
+		this.balance = balance;
+	}
+
+	public Long getTransactionId() {
         return transactionId;
     }
 

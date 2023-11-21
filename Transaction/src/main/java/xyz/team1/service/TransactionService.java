@@ -36,10 +36,11 @@ public class TransactionService {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<String> addTransaction(Transaction transaction,String token) {
         try {
-            updateBalanceForTransaction(transaction.getSenderAccountNo(), transaction.getReceiverAccountNo(),
+            Double balance = updateBalanceForTransaction(transaction.getSenderAccountNo(), transaction.getReceiverAccountNo(),
                     transaction.getAmount(),token);
             LocalDateTime time = LocalDateTime.now();
             transaction.setTransactionDateTime(time);
+            transaction.setBalance(balance);
             transactionRepository.save(transaction);
             return ResponseEntity.ok("Transaction successful!");
         } catch (Exception e) {
@@ -47,8 +48,8 @@ public class TransactionService {
                     .body("Transaction Failed! " + e.getMessage());
         }
     }
-
-    public void updateBalanceForTransaction(String senderAccountNo, String receiverAccountNo,
+    
+    public Double updateBalanceForTransaction(String senderAccountNo, String receiverAccountNo,
             Double transferAmount,String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -60,8 +61,9 @@ public class TransactionService {
         
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-        restTemplate.postForEntity(Constants.userAccountMgmtUrl + "/account/updateBalanceForTransaction", requestEntity,
-                String.class);
+        ResponseEntity<Double> balance = restTemplate.postForEntity(Constants.userAccountMgmtUrl + "/account/updateBalanceForTransaction", requestEntity,
+                Double.class);
+        return balance.getBody();
     }
 
     public List<Transaction> getTransactionForAccount(String AccountNo){

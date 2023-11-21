@@ -32,7 +32,8 @@ public class AccountService {
         return accountRepository.findById(accountId).orElse(null);
     }
     
-    public void updateBalanceForTransaction(String senderAccountNo, String receiverAccountNo, Double transferAmount) throws RuntimeException{
+    public Double updateBalanceForTransaction(String senderAccountNo, 
+    		String receiverAccountNo, Double transferAmount) throws RuntimeException{
         Optional<Account> receiverAccountOptional = accountRepository.findByAccountNo(receiverAccountNo);
         Optional<Account> senderAccountOptional = accountRepository.findByAccountNo(senderAccountNo);
 
@@ -57,12 +58,30 @@ public class AccountService {
         senderAccount.setBalance(senderFinalBalance);
 
         saveSenderAndReceiverAccounts(senderAccount,receiverAccount);
+        
+        return senderFinalBalance;
     }
 
     @Transactional
     public void saveSenderAndReceiverAccounts(Account senderAccount, Account receiverAccount) throws RuntimeException{
             accountRepository.save(senderAccount);
             accountRepository.save(receiverAccount);
+    }
+    
+    @Transactional
+    public Double updateBalanceforBill(String AccountNo, Double amount) {
+    	Account account = accountRepository.findByAccountNo(AccountNo).orElse(null);
+    	if(account!=null) {
+    		Double newBalance= account.getBalance()-amount;
+    		if(newBalance<0) {
+    			 throw new InsufficientBalanceException(
+                         "Insufficient balance for account no: " + account.getAccountNo());
+    		}
+    		account.setBalance(newBalance);
+    		return newBalance;
+    	}else {
+    		throw new AccountNotFoundException("Incorrect Account no. Account not found for account no: " + AccountNo);
+        }
     }
 
     public Account getAccountForUsername(String username) throws RuntimeException{

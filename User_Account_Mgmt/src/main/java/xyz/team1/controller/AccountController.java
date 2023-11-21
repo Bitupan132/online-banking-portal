@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -81,9 +79,30 @@ public class AccountController {
         }
 
     }
+	
+	@GetMapping("/updateBalanceForBill/{AccountNo}")
+	private Double updateBalanceForBill(@PathVariable String AccountNo,Double Amount,@RequestHeader("Authorization") String authorizationHeader)
+			throws Exception {
+		try {
+			String jwtToken = authorizationHeader.substring(7);
+			String s = feign.validateToken(jwtToken);
+			if ("Token is valid".equals(s)) {
+				
+				try {
+					
+					return accountService.updateBalanceforBill(AccountNo, Amount);
+				} catch (Exception e) {
+					throw new Exception(e.getLocalizedMessage());
+				}
+			}
+			throw new Exception("Token is not valid");
+		} catch (Exception e) {
+			throw new Exception("Token is not valid");
+		}
+	}
 
 	@PostMapping("/updateBalanceForTransaction")
-	private ResponseEntity<String> updateBalanceForTransaction(@RequestBody Map<String, Object> requestData,
+	private Double updateBalanceForTransaction(@RequestBody Map<String, Object> requestData,
 			 @RequestHeader("Authorization") String authorizationHeader)
 					throws Exception {
 				try {
@@ -95,17 +114,15 @@ public class AccountController {
 						Double transferAmount = Double.valueOf(requestData.get("transferAmount").toString());
 
 						try {
-							accountService.updateBalanceForTransaction(senderAccountNo, receiverAccountNo, transferAmount);
-							return ResponseEntity.ok("Balance updated successfully!");
+							
+							return accountService.updateBalanceForTransaction(senderAccountNo, receiverAccountNo, transferAmount);
 						} catch (Exception e) {
-							return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-									.body("Error updating balance. " + e.getLocalizedMessage());
+							throw new Exception(e.getLocalizedMessage());
 						}
 					}
 					throw new Exception("Token is not valid");
 				} catch (Exception e) {
 					throw new Exception("Token is not valid");
 				}
-		
 	}
 }
