@@ -20,7 +20,6 @@ public class AuthService {
 	@Autowired
 	private JwtService jwtService;
 	
-	// static final String USER_URL_MS="http://localhost:8877/user";
 
 	public String saveUser(User user) {
 		String response =null;

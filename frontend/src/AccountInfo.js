@@ -20,15 +20,15 @@ const AccountInfo = () => {
     const fetchUserDetails = async () => {
       let response = {};
       try {
-        // const response = await axios.get('http://your-backend-api/user/details', {
-        //   headers: {
-        //     Authorization: `Bearer ${token}`,
-        //   },
-        // });
+        const response = await axios.get(getUserDetailsUrl + username, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         //make changes here.
         // setAccountData(response.data);
-        response = await axios.get(getUserDetailsUrl + username);
+        // response = await axios.get(getUserDetailsUrl + username);
         setAccountData(prevState => ({
           ...prevState,
           name: response.data.fullName,
@@ -50,6 +50,30 @@ const AccountInfo = () => {
     navigate('/make_transaction', {
       state: {
         senderAccountNo: accountData.accountNo, 
+      },
+    });
+  }
+
+  const applyLoan = ()=>{
+    navigate('/applyLoan',{
+      state:{
+        AccountNo: accountData.accountNo,
+      },
+    });
+  }
+
+  const viewTransaction = ()=>{
+    navigate('/view',{
+      state:{
+        AccountNo: accountData.accountNo,
+      },
+    });
+  }
+
+  const viewLoan = ()=>{
+    navigate('/viewloan',{
+      state:{
+        AccountNo: accountData.accountNo,
       },
     });
   }
@@ -117,15 +141,12 @@ const AccountInfo = () => {
 
           <button type="button" onClick={goToMakeTranasaction} key="make-transaction">Make Transaction</button>
 
-          <Link to="/view" href="#" className='link'> <button type="button" >View Transaction</button>
+          <button type="button" onClick={viewTransaction} key="view-transaction">View Transaction</button>
 
-          </Link>
-          <Link to="/applyloan" href="#" className='link'> <button type="button" >Apply Loan</button>
+          <button type="button" onClick={applyLoan} key="apply-Loan">Apply Loan</button>
 
-          </Link>
-          <Link to="/viewloan" href="#" className='link'> <button type="button" >View Loan</button>
+         <button type="button" onClick={viewLoan} key="view-loan">View Loan</button>
 
-          </Link>
         </div>
       </form>
     </div>

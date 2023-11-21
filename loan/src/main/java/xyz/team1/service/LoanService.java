@@ -35,4 +35,9 @@ public class LoanService {
 		return loanRepository.findAllByAccountNo(accountNo);
 	}
 
+
+	public void delete(Long loanId) {
+		loanRepository.deleteById(loanId);
+	}
+
 }
