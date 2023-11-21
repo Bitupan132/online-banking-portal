@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,15 +18,15 @@ import jakarta.persistence.Table;
 public class Loan {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "loan_sequence")
+    @SequenceGenerator(name = "loan_sequence", sequenceName = "loan_sequence", allocationSize = 1, initialValue = (int) 100000000000L)
 	private Long loanId;
 	
-	@Column(nullable = false, unique = true, length = 12)
-	private String loanAccountNo;
+	// @Column(nullable = false, unique = true, length = 12)
+	// private String loanAccountNo;
 	
 	@Column(nullable = false)
 	private Double loanAmount;
-	
 	
 	@Column(nullable = false)
 	private String accountNo;
@@ -33,15 +34,6 @@ public class Loan {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private LoanType loanType;
-	
-	public String getAccountNo() {
-		return accountNo;
-	}
-
-	public void setAccountNo(String accountNo) {
-		this.accountNo = accountNo;
-	}
-
 
 	@Column(nullable = false)
 	private Double interestRate;
@@ -52,6 +44,14 @@ public class Loan {
 	
 	private LocalDateTime loanApplicationDateTime;
 
+	public String getAccountNo() {
+		return accountNo;
+	}
+
+	public void setAccountNo(String accountNo) {
+		this.accountNo = accountNo;
+	}
+
 	public Long getLoanId() {
 		return loanId;
 	}
@@ -60,13 +60,13 @@ public class Loan {
 		this.loanId = loanId;
 	}
 
-	public String getLoanAccountNo() {
-		return loanAccountNo;
-	}
+	// public String getLoanAccountNo() {
+	// 	return loanAccountNo;
+	// }
 
-	public void setLoanAccountNo(String loanAccountNo) {
-		this.loanAccountNo = loanAccountNo;
-	}
+	// public void setLoanAccountNo(String loanAccountNo) {
+	// 	this.loanAccountNo = loanAccountNo;
+	// }
 
 	public Double getLoanAmount() {
 		return loanAmount;
@@ -111,22 +111,8 @@ public class Loan {
 	
 	@PrePersist
 	public void PrePersistAccountCreationDateTime() {
-		// Set the account creation date to the current system date and time
-		
 		loanApplicationDateTime = LocalDateTime.now();
+		interestRate = 10.0;
+		loanStatus=LoanStatus.PENDING;
 	}
-	
-	// 
-	
-//	@OneToOne()
-//	@JoinColumn(name = "account_id")
-//	private Account account;
-//	
-	
-	
-	
-	
-	
-	
-
 }

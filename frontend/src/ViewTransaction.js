@@ -1,4 +1,3 @@
-// TransactionForm.js
 import React, { useEffect, useState } from 'react';
 import './index.css';
 import { useLocation } from 'react-router-dom';
@@ -12,14 +11,12 @@ const ViewTransaction = () => {
 
     useEffect(() => {
         const fetchTransactions = async () => {
-            let response = [];
             try {
                 const response = await axios.get(`${transactionServiceUrl}/getAll/${currentAccountNo}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                console.log(response.data);
                 setTransactionHistory(response.data);
             } catch (error) {
                 console.error(error.message);
@@ -39,13 +36,11 @@ const ViewTransaction = () => {
             <ul>
                 {transactionHistory.map((transaction) => (
                     <li key={transaction.transactionId}>
-                        {/* <span>Transaction ID: {transaction.transactionId}</span> */}
                         <span>Transaction Type: {currentAccountNo===transaction.senderAccountNo?"DEBIT":"CREDIT"}</span>
                         <span>Account No: {currentAccountNo!==transaction.senderAccountNo?transaction.senderAccountNo:transaction.receiverAccountNo}</span>
                         <span>Amount: ${transaction.amount}</span>
                         <span>Summary: {transaction.summary}</span>
                         <span>Transaction Time: {transaction.transactionDateTime}</span>
-
                     </li>
                 ))}
             </ul>

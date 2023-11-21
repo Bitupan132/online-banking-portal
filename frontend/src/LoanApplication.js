@@ -1,14 +1,40 @@
-// LoanApplication.js
 import React, { useState } from 'react';
 import './index.css';
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+
 
 const LoanApplication = () => {
+  const loanServiceUrl = "http://localhost:8012/loan";
+  const location = useLocation();
+  const { bankAccountNo, token } = location.state || {};
+  const [selectedLoan, setSelectedLoan] = useState('');
+  let loanType = 0;
+  const loanOptions = ['Personal Loan', 'Vehicle Loan', 'Home Loan'];
   const [loanData, setLoanData] = useState({
-    applicantName: '',
     loanAmount: '',
     purpose: '',
   });
-  const [viewedLoans, setViewedLoans] = useState([]);
+
+  const handleLoanChange = (event) => {
+    setSelectedLoan(event.target.value);
+    switch (event.target.value) {
+      case 'Personal Loan':
+        loanType = 0;
+        break;
+      case 'Home Loan':
+        loanType = 2;
+        break;
+      case 'Vehicle Loan':
+        loanType = 1;
+        break;
+      default:
+        loanType = 4;
+        break;
+    }
+
+    console.log(loanType);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -17,52 +43,52 @@ const LoanApplication = () => {
 
   const handleReset = () => {
     setLoanData({
-      applicantName: '',
       loanAmount: '',
       purpose: '',
     });
   };
 
-  const handleSend = () => {
-    if (loanData.applicantName && loanData.loanAmount && loanData.purpose) {
-      const newLoan = {
-        id: Date.now(),
-        applicantName: loanData.applicantName,
-        loanAmount: parseFloat(loanData.loanAmount),
-        purpose: loanData.purpose,
-      };
-
-      setViewedLoans([...viewedLoans, newLoan]);
+  const handleSend = async () => {
+    if (loanData.loanAmount && loanData.purpose) {
+      await axios.post(loanServiceUrl + "/applyForLoan", {
+        accountNo: bankAccountNo,
+        loanAmount: loanData.loanAmount,
+        loanType: loanType,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then(res => alert("Loan Applied Successfuilly. Loan Application id:"+ res.data.loanId))
+        .catch((e) => alert(e.message));
       handleReset();
     } else {
-      alert('Please enter all required information.');
+      alert('Please enter all required information');
     }
-  };
-
-  const handleDelete = (id) => {
-    const updatedLoans = viewedLoans.filter((loan) => loan.id !== id);
-    setViewedLoans(updatedLoans);
   };
 
   return (
     <div className="loan-application-container">
       <h2>Apply for a Loan</h2>
       <form className="loan-application-form">
-        <label>Applicant Name:</label>
-        <input
-          type="text"
-          name="applicantName"
-          value={loanData.applicantName}
-          onChange={handleInputChange}
-        />
-
-        <label>Loan Amount:</label>
+        <label>Required Loan Amount:</label>
         <input
           type="number"
           name="loanAmount"
           value={loanData.loanAmount}
           onChange={handleInputChange}
+          placeholder='1000000'
         />
+
+        <label>Select Loan Type:</label>
+        <select value={selectedLoan} onChange={handleLoanChange}>
+          <option value="">Select...</option>
+          {loanOptions.map((option, index) => (
+            <option key={index} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
 
         <label>Purpose:</label>
         <input
@@ -70,6 +96,7 @@ const LoanApplication = () => {
           name="purpose"
           value={loanData.purpose}
           onChange={handleInputChange}
+          placeholder='reason for applying loan...'
         />
 
         <div className="button-container">
@@ -81,20 +108,6 @@ const LoanApplication = () => {
           </button>
         </div>
       </form>
-
-      <div className="viewed-loans">
-        <h2>Viewed Loans</h2>
-        <ul>
-          {viewedLoans.map((loan) => (
-            <li key={loan.id}>
-              <span>Applicant Name: {loan.applicantName}</span>
-              <span>Loan Amount: ${loan.loanAmount}</span>
-              <span>Purpose: {loan.purpose}</span>
-              <button onClick={() => handleDelete(loan.id)}>Delete</button>
-            </li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 };

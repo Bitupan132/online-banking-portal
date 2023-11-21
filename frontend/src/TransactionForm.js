@@ -13,7 +13,6 @@ const TransactionForm = () => {
     amount: '',
     summary: ''
   });
-  const [transactionHistory, setTransactionHistory] = useState([]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -30,11 +29,6 @@ const TransactionForm = () => {
 
   const handleSend = async () => {
     if (transactionData.receiverAccountNo && transactionData.amount) {
-      const newTransaction = {
-        receiverAccountNo: transactionData.receiverAccountNo,
-        amount: parseFloat(transactionData.amount),
-        summary: transactionData.summary,
-      };
       await axios.post(transactionServiceUrl + "/add", {
         senderAccountNo: senderAccountNo,
         receiverAccountNo: transactionData.receiverAccountNo,
@@ -47,16 +41,10 @@ const TransactionForm = () => {
       })
         .then(res => alert(res.data))
         .catch((e) => alert(e.message));
-      setTransactionHistory([...transactionHistory, newTransaction]);
       handleReset();
     } else {
-      alert('Please enter both "Send To" and "Amount"');
+      alert('Please enter both all required information.');
     }
-  };
-
-  const handleDelete = (id) => {
-    const updatedHistory = transactionHistory.filter((transaction) => transaction.id !== id);
-    setTransactionHistory(updatedHistory);
   };
 
   return (
@@ -67,7 +55,7 @@ const TransactionForm = () => {
         <input
           type="text"
           name="receiverAccountNo"
-          placeholder='Account No'
+          placeholder='Enter 12 digit account no.'
           value={transactionData.receiverAccountNo}
           onChange={handleInputChange}
         />
@@ -97,21 +85,6 @@ const TransactionForm = () => {
           </button>
         </div>
       </form>
-
-      <div className="transaction-history">
-        <h2>Transaction History</h2>
-        <ul>
-          {transactionHistory.map((transaction) => (
-            <li key={transaction.id}>
-              <span>From account No: {senderAccountNo}</span>
-              <span>Amount: ${transaction.amount}</span>
-              <span>Sent To: {transaction.receiverAccountNo}</span>
-              <span>Summary: {transaction.summary}</span>
-              <button onClick={() => handleDelete(transaction.id)}>Delete</button>
-            </li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 };
