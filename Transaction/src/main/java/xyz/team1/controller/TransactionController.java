@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import xyz.team1.constants.Constants;
 import xyz.team1.interceptor.FeignClientInterface;
 import xyz.team1.model.Transaction;
 import xyz.team1.service.TransactionService;
@@ -34,7 +35,7 @@ public class TransactionController {
 		try {
 		String jwtToken = authorizationHeader.substring(7);
 		String s = feign.validateToken(jwtToken);
-		if ("Token is valid".equals(s)) 
+		if (Constants.tokenValidString.equals(s)) 
 		{
 			return transactionService.getAllTransaction();
 		}
@@ -50,7 +51,7 @@ public class TransactionController {
 		try {
 		String jwtToken = authorizationHeader.substring(7);
 		String s = feign.validateToken(jwtToken);
-		if ("Token is valid".equals(s)) 
+		if (Constants.tokenValidString.equals(s)) 
 		{
 			return transactionService.getTransactionForAccount(accountNo);
 		}
@@ -66,7 +67,7 @@ public class TransactionController {
 		try {
 		String jwtToken = authorizationHeader.substring(7);
 		String s = feign.validateToken(jwtToken);
-		if ("Token is valid".equals(s)) 
+		if (Constants.tokenValidString.equals(s)) 
 		{
 			return transactionService.addTransaction(transaction,jwtToken);
 		}

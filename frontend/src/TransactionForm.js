@@ -7,7 +7,7 @@ import axios from 'axios';
 const TransactionForm = () => {
   const transactionServiceUrl = "http://localhost:8081/transaction";
   const location = useLocation();
-  const { senderAccountNo } = location.state || {};
+  const { senderAccountNo, token } = location.state || {};
   const [transactionData, setTransactionData] = useState({
     receiverAccountNo: '',
     amount: '',
@@ -40,6 +40,10 @@ const TransactionForm = () => {
         receiverAccountNo: transactionData.receiverAccountNo,
         amount: transactionData.amount,
         summary: transactionData.summary
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
         .then(res => alert(res.data))
         .catch((e) => alert(e.message));
