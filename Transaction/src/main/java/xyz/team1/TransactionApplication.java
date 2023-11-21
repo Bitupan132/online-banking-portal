@@ -2,8 +2,10 @@ package xyz.team1;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@ComponentScan(basePackages = "xyz.team1")
 public class TransactionApplication {
 
 	public static void main(String[] args) {

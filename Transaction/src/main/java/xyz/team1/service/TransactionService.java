@@ -1,5 +1,8 @@
 package xyz.team1.service;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +34,12 @@ public class TransactionService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<String> addTransaction(Transaction transaction) {
+    public ResponseEntity<String> addTransaction(Transaction transaction,String token) {
         try {
             updateBalanceForTransaction(transaction.getSenderAccountNo(), transaction.getReceiverAccountNo(),
-                    transaction.getAmount());
+                    transaction.getAmount(),token);
+            LocalDateTime time = LocalDateTime.now();
+            transaction.setTransactionDateTime(time);
             transactionRepository.save(transaction);
             return ResponseEntity.ok("Transaction successful!");
         } catch (Exception e) {
@@ -44,22 +49,27 @@ public class TransactionService {
     }
 
     public void updateBalanceForTransaction(String senderAccountNo, String receiverAccountNo,
-            Double transferAmount) {
+            Double transferAmount,String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
+        headers.set("Authorization","Bearer "+token);
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("senderAccountNo", senderAccountNo);
         requestBody.put("receiverAccountNo", receiverAccountNo);
         requestBody.put("transferAmount", transferAmount);
-
+        
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
         restTemplate.postForEntity(Constants.userAccountMgmtUrl + "/account/updateBalanceForTransaction", requestEntity,
                 String.class);
     }
 
-    public String getAccountForId(Long id) {
-        return restTemplate.getForObject(Constants.userAccountMgmtUrl + "/account/getAccountForId", String.class);
+    public List<Transaction> getTransactionForAccount(String AccountNo){
+    	
+    	List<Transaction> trans = transactionRepository.findBySenderAccountNo(AccountNo);
+    	trans.addAll(transactionRepository.findByReceiverAccountNo(AccountNo));
+    	Collections.sort(trans, Comparator.comparing(Transaction::getTransactionDateTime));
+    	
+    	return trans;
     }
 }
