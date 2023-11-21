@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import xyz.team1.constants.Constants;
 import xyz.team1.interceptor.FeignClientInterface;
 import xyz.team1.model.Loan;
 import xyz.team1.service.LoanService;
@@ -31,7 +32,7 @@ public class LoanController {
 		try {
 		String jwtToken = authorizationHeader.substring(7);
 		String s = feign.validateToken(jwtToken);
-		if ("Token is valid".equals(s)) 
+		if (Constants.tokenValidString.equals(s)) 
 		{
 			return loanService.getAllLoans();
 		}
@@ -47,7 +48,7 @@ public class LoanController {
 		try {
 		String jwtToken = authorizationHeader.substring(7);
 		String s = feign.validateToken(jwtToken);
-		if ("Token is valid".equals(s)) 
+		if (Constants.tokenValidString.equals(s)) 
 		{
 			return loanService.applyForLoan(loan);
 		}
@@ -63,7 +64,7 @@ public class LoanController {
 		try {
 		String jwtToken = authorizationHeader.substring(7);
 		String s = feign.validateToken(jwtToken);
-		if ("Token is valid".equals(s)) 
+		if (Constants.tokenValidString.equals(s)) 
 		{
 			return loanService.getLoanById(loanId);
 		}
@@ -80,7 +81,7 @@ public class LoanController {
 		try {
 		String jwtToken = authorizationHeader.substring(7);
 		String s = feign.validateToken(jwtToken);
-		if ("Token is valid".equals(s)) 
+		if (Constants.tokenValidString.equals(s)) 
 		{
 			loanService.delete(loanId);
 		}
@@ -98,7 +99,7 @@ public class LoanController {
 		try {
 		String jwtToken = authorizationHeader.substring(7);
 		String s = feign.validateToken(jwtToken);
-		if ("Token is valid".equals(s)) 
+		if (Constants.tokenValidString.equals(s)) 
 		{
 			return loanService.findAllByAccountNo(accountNo);
 		}

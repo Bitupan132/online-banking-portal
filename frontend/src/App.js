@@ -21,7 +21,9 @@ const App = () => {
     <Route path="/signup" element={<SignupForm />}></Route>
     <Route path="/account" element={<AccountInfo />}></Route>
     <Route path="/make_transaction" element={<TransactionForm />}></Route>
+    <Route path="/view_transaction" element={<ViewTransaction />}></Route>
     <Route path="/applyloan" element={<LoanApplication />}></Route>
+    
 
     
   </Routes>

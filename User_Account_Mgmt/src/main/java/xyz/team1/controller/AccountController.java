@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import xyz.team1.constants.Constants;
 import xyz.team1.interceptor.FeignClientInterface;
 import xyz.team1.model.Account;
 import xyz.team1.service.AccountService;
@@ -34,7 +35,7 @@ public class AccountController {
 		try {
 			String jwtToken = authorizationHeader.substring(7);
 			String s = feign.validateToken(jwtToken);
-			if ("Token is valid".equals(s)) {
+			if (Constants.tokenValidString.equals(s)) {
 				return accountService.getAll();
 			}
 			throw new Exception("Token is not valid");
@@ -50,7 +51,7 @@ public class AccountController {
 		try {
 			String jwtToken = authorizationHeader.substring(7);
 			String s = feign.validateToken(jwtToken);
-			if ("Token is valid".equals(s)) {
+			if (Constants.tokenValidString.equals(s)) {
 				return accountService.addAccount(account);
 			}
 			throw new Exception("Token is not valid");
@@ -66,7 +67,7 @@ public class AccountController {
 		try {
 			String jwtToken = authorizationHeader.substring(7);
 			String s = feign.validateToken(jwtToken);
-			if ("Token is valid".equals(s)) 
+			if (Constants.tokenValidString.equals(s)) 
 			{
 				try {
 					Account account = accountService.getAccountForUsername(username);
@@ -89,7 +90,7 @@ public class AccountController {
 				try {
 					String jwtToken = authorizationHeader.substring(7);
 					String s = feign.validateToken(jwtToken);
-					if ("Token is valid".equals(s)) {
+					if (Constants.tokenValidString.equals(s)) {
 						String senderAccountNo = requestData.get("senderAccountNo").toString();
 						String receiverAccountNo = requestData.get("receiverAccountNo").toString();
 						Double transferAmount = Double.valueOf(requestData.get("transferAmount").toString());

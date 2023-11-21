@@ -50,6 +50,7 @@ const AccountInfo = () => {
     navigate('/make_transaction', {
       state: {
         senderAccountNo: accountData.accountNo, 
+        token: token,
       },
     });
   }
@@ -63,9 +64,10 @@ const AccountInfo = () => {
   }
 
   const viewTransaction = ()=>{
-    navigate('/view',{
+    navigate('/view_transaction',{
       state:{
-        AccountNo: accountData.accountNo,
+        currentAccountNo: accountData.accountNo,
+        token:token
       },
     });
   }
