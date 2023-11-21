@@ -6,6 +6,6 @@ public enum LoanType {
 	// 1 for vehicle loan
 	// 2 for home loan
 	
-	PERSONAL_LOAN, VEHICLE_LOAN, HOME_LOAN;
+	PERSONAL_LOAN, VEHICLE_LOAN, HOME_LOAN, UNAVAILABLE;
 
 }

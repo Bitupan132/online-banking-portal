@@ -25,10 +25,6 @@ const AccountInfo = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-
-        //make changes here.
-        // setAccountData(response.data);
-        // response = await axios.get(getUserDetailsUrl + username);
         setAccountData(prevState => ({
           ...prevState,
           name: response.data.fullName,
@@ -36,7 +32,6 @@ const AccountInfo = () => {
           mobile: response.data.phoneNo,
           balance: response.data.balance
         }));
-        //   console.log(accountData);
       } catch (error) {
         console.error(error.message);
         // Handle the error (e.g., show a message to the user)
@@ -58,7 +53,8 @@ const AccountInfo = () => {
   const applyLoan = ()=>{
     navigate('/applyLoan',{
       state:{
-        AccountNo: accountData.accountNo,
+        bankAccountNo: accountData.accountNo,
+        token:token
       },
     });
   }
@@ -75,7 +71,7 @@ const AccountInfo = () => {
   const viewLoan = ()=>{
     navigate('/viewloan',{
       state:{
-        AccountNo: accountData.accountNo,
+        bankAccountNo: accountData.accountNo,
       },
     });
   }
