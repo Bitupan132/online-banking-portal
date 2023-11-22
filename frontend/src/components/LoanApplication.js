@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import './index.css';
-import { useLocation } from 'react-router-dom';
+import '../css/index.css';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 
 const LoanApplication = () => {
   const loanServiceUrl = "http://localhost:8012/loan";
   const location = useLocation();
-  const { bankAccountNo, token } = location.state || {};
+  const navigate = useNavigate();
+  const { bankAccountNo, token, username } = location.state || {};
   const [selectedLoan, setSelectedLoan] = useState('');
   let loanType = 0;
   const loanOptions = ['Personal Loan', 'Vehicle Loan', 'Home Loan'];
@@ -33,7 +34,6 @@ const LoanApplication = () => {
         break;
     }
 
-    console.log(loanType);
   };
 
   const handleInputChange = (e) => {
@@ -48,6 +48,15 @@ const LoanApplication = () => {
     });
   };
 
+  const returnHome =()=>{
+    navigate('/account', {
+        state: {
+          token: token,
+          username: username,
+        },
+      });
+}
+
   const handleSend = async () => {
     if (loanData.loanAmount && loanData.purpose) {
       await axios.post(loanServiceUrl + "/applyForLoan", {
@@ -59,7 +68,18 @@ const LoanApplication = () => {
           Authorization: `Bearer ${token}`,
         },
       })
-        .then(res => alert("Loan Applied Successfuilly. Loan Application id:"+ res.data.loanId))
+        .then(res => {
+          if (res.data === "INVALID_TOKEN") {
+            alert("Session Expired. Please Login again.");
+            navigate('/');
+          }
+          else {
+            alert("Loan Applied Successfuilly. Loan Application id:"+ res.data.loanId)
+            navigate('/account', {
+              state: { username, token },
+            });
+          }
+        })
         .catch((e) => alert(e.message));
       handleReset();
     } else {
@@ -68,7 +88,7 @@ const LoanApplication = () => {
   };
 
   return (
-    <div className="loan-application-container">
+    <div className="card">
       <h2>Apply for a Loan</h2>
       <form className="loan-application-form">
         <label>Required Loan Amount:</label>
@@ -108,6 +128,9 @@ const LoanApplication = () => {
           </button>
         </div>
       </form>
+      <div>
+          <button onClick={returnHome} style={{ backgroundColor: 'red',margin:'10px' }}>Cancel</button>
+      </div>
     </div>
   );
 };

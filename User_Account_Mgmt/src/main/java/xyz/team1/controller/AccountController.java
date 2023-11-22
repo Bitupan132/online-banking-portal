@@ -47,7 +47,7 @@ public class AccountController {
 	@GetMapping("/getAccountForUsername/{username}")
 	private Object getAccountForUsername(@PathVariable String username,
 			@RequestHeader("Authorization") String authorizationHeader) throws RuntimeException {
-		System.out.println("Hit getAccountForUsername");
+		
 		if (accountService.validateToken(authorizationHeader)) {
 			Account account = accountService.getAccountForUsername(username);
 			if (Objects.isNull(account)) {

@@ -45,19 +45,13 @@ public class LoanController {
 	}
 
 	@PostMapping("/applyForLoan")
-	private Loan applyLoan(@RequestBody Loan loan, @RequestHeader("Authorization") String authorizationHeader)
-			throws Exception {
-		try {
-			String jwtToken = authorizationHeader.substring(7);
-			String s = feign.validateToken(jwtToken);
-			if (Constants.tokenValidString.equals(s)) {
-				return loanService.applyForLoan(loan);
-			}
-			throw new Exception(Constants.tokenInvalidString);
-		} catch (Exception e) {
-			throw new Exception(e.getLocalizedMessage());
+	private Object applyLoan(@RequestBody Loan loan, 
+			@RequestHeader("Authorization") String authorizationHeader)
+	{
+		if (loanService.validateToken(authorizationHeader)) {
+			return loanService.applyForLoan(loan);
 		}
-
+		return Constants.tokenInvalidString;
 	}
 
 	@GetMapping("/getLoanById/{loanId}")
@@ -77,35 +71,22 @@ public class LoanController {
 	}
 
 	@DeleteMapping("/deleteLoan/{loanId}")
-	private void deleteLoan(@PathVariable Long loanId, @RequestHeader("Authorization") String authorizationHeader)
-			throws Exception {
-		try {
-			String jwtToken = authorizationHeader.substring(7);
-			String s = feign.validateToken(jwtToken);
-			if (Constants.tokenValidString.equals(s)) {
-				loanService.delete(loanId);
-			}
-			throw new Exception(Constants.tokenInvalidString);
-		} catch (Exception e) {
-			throw new Exception(e.getLocalizedMessage());
+	private Object deleteLoan(@PathVariable Long loanId, 
+			@RequestHeader("Authorization") String authorizationHeader)
+	{
+		if (loanService.validateToken(authorizationHeader)) {
+			return loanService.delete(loanId);
 		}
-
+		return Constants.tokenInvalidString;
 	}
 
 	@GetMapping("/getAllByAccountNo/{accountNo}")
-	private List<Loan> findAllByAccountNo(@PathVariable String accountNo,
-			@RequestHeader("Authorization") String authorizationHeader) throws Exception {
-		try {
-			String jwtToken = authorizationHeader.substring(7);
-			String s = feign.validateToken(jwtToken);
-			if (Constants.tokenValidString.equals(s)) {
-				return loanService.findAllByAccountNo(accountNo);
-			}
-			throw new Exception(Constants.tokenInvalidString);
-		} catch (Exception e) {
-			throw new Exception(e.getLocalizedMessage());
+	private Object findAllByAccountNo(@PathVariable String accountNo,
+			@RequestHeader("Authorization") String authorizationHeader){
+		if (loanService.validateToken(authorizationHeader)) {
+			return loanService.findAllByAccountNo(accountNo);
 		}
-
+		return Constants.tokenInvalidString;
 	}
 
 }

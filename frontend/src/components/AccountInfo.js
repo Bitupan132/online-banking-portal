@@ -1,7 +1,6 @@
-// AccountInfo.js
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import './index.css';
+import '../css/AccountInfo.css';
 import axios from 'axios';
 
 const AccountInfo = () => {
@@ -65,7 +64,8 @@ const AccountInfo = () => {
     navigate('/apply_loan', {
       state: {
         bankAccountNo: accountData.accountNo,
-        token: token
+        token: token,
+        username: username,
       },
     });
   }
@@ -74,7 +74,8 @@ const AccountInfo = () => {
     navigate('/view_transaction', {
       state: {
         currentAccountNo: accountData.accountNo,
-        token: token
+        token: token,
+        username: username,
       },
     });
   }
@@ -83,83 +84,56 @@ const AccountInfo = () => {
     navigate('/view_loan', {
       state: {
         bankAccountNo: accountData.accountNo,
-        token: token
+        token: token,
+        username: username,
       },
     });
   }
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setAccountData({ ...accountData, [name]: value });
-  };
-
-  const handleReset = () => {
-    setAccountData({
-      name: '',
-      accountNo: '',
-      mobile: '',
-      balance: '',
-    });
-  };
-
-  const handleSave = () => {
-    console.log('Account Data:', accountData);
-    // Add save logic here (connect to backend, update state, etc.)
-  };
-
-  const handleDeposit = () => {
-    // Add deposit logic here
-    console.log('Deposit button clicked');
-  };
-
-  const handleWithdraw = () => {
-    // Add withdraw logic here
-    console.log('Withdraw button clicked');
-  };
+  const handleLogout = () => {
+    navigate('/');
+  }
 
   return (
-    <div className="account-info-container">
-      <h2>Account Information</h2>
-      <form className="account-form">
-        <div>
-          <strong><label>Name: </label></strong>
-          <span>{accountData.name}</span>
+    <div>
+            <div className="button-container-log">
+                <button className="logout-button" type="button" onClick={handleLogout}>Logout</button>
+            </div>
+            <div className="account-info-container">
+                <h2>Account Information</h2>
+
+                <div className="column-container">
+                    <div>
+                        <strong><label>Name: </label></strong>
+                        <span>{accountData.name}</span>
+                    </div>
+
+                    <div>
+                        <strong><label>Mobile: </label></strong>
+                        <span>{accountData.mobile}</span>
+                    </div>
+                </div>
+
+                <div className="column-container">
+                    <div>
+                        <strong><label>Account Number: </label></strong>
+                        <span>{accountData.accountNo}</span>
+                    </div>
+
+                    <div>
+                        <strong><label>Balance: </label></strong>
+                        <span>{accountData.balance}</span>
+                    </div>
+                </div>
+
+                <div className="button-container">
+                    <button className="make-transaction-button" type="button" onClick={goToMakeTranasaction}>Make Transaction</button>
+                    <button className="view-transaction-button" type="button" onClick={viewTransaction}>View Transaction</button>
+                    <button className="apply-loan-button" type="button" onClick={applyLoan}>Apply Loan</button>
+                    <button className="view-loan-button" type="button" onClick={viewLoan}>View Loan</button>
+                </div>
+            </div>
         </div>
-        <br />
-
-        <div>
-          <strong>  <label>Account Number: </label></strong>
-          <span>{accountData.accountNo}</span>
-        </div>
-        <br />
-
-        <div>
-          <strong><label>Mobile: </label> </strong>
-          <span>{accountData.mobile}</span>
-        </div>
-        <br />
-
-        <div>
-          <strong><label>Balance: </label> </strong>
-          <span>{accountData.balance}</span>
-        </div>
-        <br />
-
-
-
-        <div className="button-container">
-
-          <button type="button" onClick={goToMakeTranasaction} key="make-transaction">Make Transaction</button>
-
-          <button type="button" onClick={viewTransaction} key="view-transaction">View Transaction</button>
-
-          <button type="button" onClick={applyLoan} key="apply-Loan">Apply Loan</button>
-
-          <button type="button" onClick={viewLoan} key="view-loan">View Loan</button>
-
-        </div>
-      </form>
-    </div>
   );
 };
 

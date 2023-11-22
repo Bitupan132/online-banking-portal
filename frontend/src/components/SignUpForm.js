@@ -1,7 +1,7 @@
 // LoginForm.js
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
-import './index.css'; // Import the stylesheet
+import '../css/login.css';
 import axios from 'axios';
 
 
@@ -22,11 +22,12 @@ const SignupForm = ({ onToggleForm }) => {
   return (
     <div className="login-form-container">
       <h2>Signup</h2>
-      <form onSubmit={handleSignupSubmit}>
+      <form className='card' onSubmit={handleSignupSubmit}>
         <label>Username:</label>
         <input
           type="text"
           value={signupData.username}
+          placeholder='Enter Username'
           onChange={(e) => setSignupData({ ...signupData, username: e.target.value })}
         />
 
@@ -34,15 +35,17 @@ const SignupForm = ({ onToggleForm }) => {
         <input
           type="password"
           value={signupData.password}
+          placeholder='Enter Password'
           onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
         />
         <label>Account Number:</label>
         <input
           type="text"
           value={signupData.account}
+          placeholder='Enter Account Number'
           onChange={(e) => setSignupData({ ...signupData, account: e.target.value })}
         />
-
+        <br></br>
         <button type="submit">Signup</button>
       </form>
 

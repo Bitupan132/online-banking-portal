@@ -1,0 +1,83 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #ffe5b4;
+    position: relative;
+    overflow-y: auto;
+}
+
+.account-info-container {
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    width: 600px; 
+    text-align: center;
+    margin: 20px auto; 
+}
+
+h2 {
+    color:#b4f6ff;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+label {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+span {
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.column-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.button-container-log {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+}
+
+.button-container button {
+    margin-right: 10px;
+    margin-top: 15px;
+    cursor: pointer;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+}
+
+.make-transaction-button {
+    background-color: royalblue; /* Royal blue color */
+    color: #fff;
+    margin: top 10px; ;
+}
+
+.view-transaction-button {
+    background-color: #27ae60; /* Emerald green color */
+    color: #fff;
+}
+
+.apply-loan-button {
+    background-color: #9b59b6; /* Purple color */
+    color: #fff;
+}
+
+.view-loan-button {
+    background-color: #a83250;
+    color: #fff;
+}
+
+.logout-button {
+    background-color: #e74c3c; /* Red color */
+    color: #fff;
+}
+
+.button-container button:hover {
+    opacity: 0.9;
+}

@@ -1,39 +1,31 @@
 // App.js
 import React from 'react';
-// import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-// import SignupForm from './Sign';
 import { Routes, Route } from 'react-router-dom';
-import LoginForm from './LoginForm';
-import SignupForm from './SignUpForm';
-import AccountInfo from './AccountInfo';
+import LoginForm from './components/LoginForm';
+import SignupForm from './components/SignUpForm';
+import AccountInfo from './components/AccountInfo';
 
-import TransactionForm from './TransactionForm';
-import ViewTransaction from './ViewTransaction';
-import LoanApplication from './LoanApplication';
-import ViewLoan from './ViewLoan';
+import TransactionForm from './components/TransactionForm';
+import ViewTransaction from './components/ViewTransaction';
+import LoanApplication from './components/LoanApplication';
+import ViewLoan from './components/ViewLoan';
 
 const App = () => {
   return (
   
-  <div >
-  
-  <Routes>
-    <Route path="/" element={<LoginForm />}></Route>
-    <Route path="/signup" element={<SignupForm />}></Route>
-    <Route path="/account" element={<AccountInfo />}></Route>
-    <Route path="/make_transaction" element={<TransactionForm />}></Route>
-    <Route path="/view_transaction" element={<ViewTransaction />}></Route>
-    <Route path="/apply_loan" element={<LoanApplication />}></Route>
-    <Route path="/view_loan" element={<ViewLoan />}></Route>
-
+      <div >
+      
+      <Routes>
+        <Route path="/" element={<LoginForm />}></Route>
+        <Route path="/signup" element={<SignupForm />}></Route>
+        <Route path="/account" element={<AccountInfo />}></Route>
+        <Route path="/make_transaction" element={<TransactionForm />}></Route>
+        <Route path="/view_transaction" element={<ViewTransaction />}></Route>
+        <Route path="/apply_loan" element={<LoanApplication />}></Route>
+        <Route path="/view_loan" element={<ViewLoan />}></Route>
+      </Routes>
     
-  </Routes>
-  {/* <ViewTransaction/> */}
-  {/* <AccountInfo/> */}
-  {/* <LoginForm/> */}
-  {/* <TransactionForm/> */}
-  {/* <LoanApplication/> */}
-</div>
+    </div>
   );
 };
 

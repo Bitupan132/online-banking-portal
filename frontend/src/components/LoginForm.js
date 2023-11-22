@@ -1,8 +1,7 @@
 import React, { useState} from 'react';
 import { Link, useNavigate} from "react-router-dom";
-import './index.css';
 import  axios  from 'axios';
-
+import '../css/login.css'
 
 const LoginForm = ({ onToggleForm }) => {
    
@@ -19,6 +18,7 @@ const LoginForm = ({ onToggleForm }) => {
   };
   const login = async (loginData) => {
     try {
+      if(loginData.username!=='' && loginData.password!==''){
       const response = await axios.post(postTokenEndpoint, {
         username: loginData.username,
         password: loginData.password,
@@ -27,6 +27,9 @@ const LoginForm = ({ onToggleForm }) => {
       navigate('/account', {
         state: { username: loginData.username, token: response.data },
       });
+    }else{
+      alert("Please enter the details");
+    }
     } catch (error) {
       setErrorMessage('Invalid credentials. Please try again.');
     }
@@ -35,11 +38,12 @@ const LoginForm = ({ onToggleForm }) => {
   return (
     <div className="login-form-container">
     <h2>Login</h2>
-    <form onSubmit={handleLoginSubmit}>
+    <form className='card' onSubmit={handleLoginSubmit}>
       <label>Username:</label>
       <input
         type="text"
         value={loginData.username}
+        placeholder='Username'
         onChange={(e) => setLoginData({ ...loginData, username: e.target.value })}
       />
 
@@ -47,6 +51,7 @@ const LoginForm = ({ onToggleForm }) => {
       <input
         type="password"
         value={loginData.password}
+        placeholder='Password'
         onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
       />
 

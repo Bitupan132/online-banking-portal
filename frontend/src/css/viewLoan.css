@@ -1,0 +1,45 @@
+/* LoanHistory.css */
+
+.loan-history {
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    width: 600px; /* Adjust the width as needed */
+    margin: 20px auto; /* Center the container */
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
+h2 {
+    color: #3498db; /* Heading color */
+}
+
+span {
+    display: block;
+    margin-bottom: 10px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+/* Style for the Delete Loan button */
+.delete-loan-button {
+    background-color: #e74c3c; /* Red color */
+    color: #fff;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-loan-button:hover {
+    background-color: #c0392b; /* Darker shade on hover */
+}

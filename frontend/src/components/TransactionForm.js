@@ -1,6 +1,5 @@
-// TransactionForm.js
 import React, { useState } from 'react';
-import './index.css';
+import '../css/index.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -59,8 +58,17 @@ const TransactionForm = () => {
     }
   };
 
+  const returnHome =()=>{
+    navigate('/account', {
+        state: {
+          token: token,
+          username: username,
+        },
+      });
+}
+
   return (
-    <div className="transaction-form-container">
+    <div className='card'>
       <h2>Make Transaction</h2>
       <form className="transaction-form">
         <label>Account No:</label>
@@ -97,6 +105,9 @@ const TransactionForm = () => {
           </button>
         </div>
       </form>
+      <div>
+          <button onClick={returnHome} style={{  backgroundColor: 'red',margin:'10px' }}>Cancel</button>
+      </div>
     </div>
   );
 };
