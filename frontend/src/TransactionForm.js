@@ -41,10 +41,16 @@ const TransactionForm = () => {
         },
       })
         .then(res => {
-          alert(res.data)
-          navigate('/account', {
-            state: { username, token },
-          });
+          if (res.data === "INVALID_TOKEN") {
+            alert("Session Expired. Please Login again.");
+            navigate('/');
+          }
+          else {
+            alert(res.data)
+            navigate('/account', {
+              state: { username, token },
+            });
+          }
         })
         .catch((error) => alert(error.response.data));
       handleReset();

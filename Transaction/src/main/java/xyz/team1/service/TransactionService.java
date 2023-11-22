@@ -37,7 +37,9 @@ public class TransactionService {
             ResponseEntity<String> response = updateBalanceForTransaction(transaction.getSenderAccountNo(),
                     transaction.getReceiverAccountNo(),
                     transaction.getAmount(), token);
-
+            if (response.getStatusCode().is4xxClientError()) {
+                return response.getBody();
+            }
             if (response.getStatusCode().is5xxServerError()) {
                 return response.getBody();
             }
@@ -58,11 +60,9 @@ public class TransactionService {
         requestBody.put("transferAmount", transferAmount);
 
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
-        ResponseEntity<String> res = restTemplate.postForEntity(Constants.userAccountMgmtUrl + "/account/updateBalanceForTransaction",
+        return restTemplate.postForEntity(Constants.userAccountMgmtUrl + "/account/updateBalanceForTransaction",
                 requestEntity,
                 String.class);
-
-        return res;
     }
 
     public List<Transaction> getTransactionForAccount(String AccountNo) {

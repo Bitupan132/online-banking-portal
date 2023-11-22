@@ -1,6 +1,5 @@
 package xyz.team1.controller;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -29,30 +28,20 @@ public class AccountController {
 	private AccountService accountService;
 
 	@GetMapping("/getAll")
-	private List<Account> getAllAccount(@RequestHeader("Authorization") String authorizationHeader) throws Exception {
-		try {
-			if (accountService.validateToken(authorizationHeader)) {
-				return accountService.getAll();
-			}
-			throw new Exception(Constants.tokenInvalidString);
-		} catch (Exception e) {
-			throw new Exception(e.getLocalizedMessage());
+	private Object getAllAccount(@RequestHeader("Authorization") String authorizationHeader) {
+		if (accountService.validateToken(authorizationHeader)) {
+			return accountService.getAll();
 		}
-
+		return Constants.tokenInvalidString;
 	}
 
 	@PostMapping("/add")
-	private Account addAccount(@RequestBody Account account, @RequestHeader("Authorization") String authorizationHeader)
-			throws Exception {
-		try {
-			if (accountService.validateToken(authorizationHeader)) {
-				return accountService.addAccount(account);
-			}
-			throw new Exception(Constants.tokenInvalidString);
-		} catch (Exception e) {
-			throw new Exception(e.getLocalizedMessage());
+	private Object addAccount(@RequestBody Account account,
+			@RequestHeader("Authorization") String authorizationHeader) {
+		if (accountService.validateToken(authorizationHeader)) {
+			return accountService.addAccount(account);
 		}
-
+		return Constants.tokenInvalidString;
 	}
 
 	@GetMapping("/getAccountForUsername/{username}")
@@ -61,7 +50,7 @@ public class AccountController {
 		System.out.println("Hit getAccountForUsername");
 		if (accountService.validateToken(authorizationHeader)) {
 			Account account = accountService.getAccountForUsername(username);
-			if(Objects.isNull(account)){
+			if (Objects.isNull(account)) {
 				return "ACCOUNT_DOES_NOT_EXIST";
 			}
 			return account;
@@ -73,24 +62,19 @@ public class AccountController {
 	private ResponseEntity<String> updateBalanceForTransaction(@RequestBody Map<String, Object> requestData,
 			@RequestHeader("Authorization") String authorizationHeader)
 			throws Exception {
-		try {
-			if (accountService.validateToken(authorizationHeader)) {
-				String senderAccountNo = requestData.get("senderAccountNo").toString();
-				String receiverAccountNo = requestData.get("receiverAccountNo").toString();
-				Double transferAmount = Double.valueOf(requestData.get("transferAmount").toString());
+		if (accountService.validateToken(authorizationHeader)) {
+			String senderAccountNo = requestData.get("senderAccountNo").toString();
+			String receiverAccountNo = requestData.get("receiverAccountNo").toString();
+			Double transferAmount = Double.valueOf(requestData.get("transferAmount").toString());
 
-				try {
-					accountService.updateBalanceForTransaction(senderAccountNo, receiverAccountNo, transferAmount);
-					return ResponseEntity.ok("Balance updated successfully!");
-				} catch (Exception e) {
-					throw new Exception(e.getLocalizedMessage());
-				}
+			try {
+				accountService.updateBalanceForTransaction(senderAccountNo, receiverAccountNo, transferAmount);
+				return ResponseEntity.ok("Balance updated successfully!");
+			} catch (Exception e) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+						.body(e.getLocalizedMessage());
 			}
-			throw new Exception(Constants.tokenInvalidString);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(e.getLocalizedMessage());
 		}
-
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Constants.tokenInvalidString);
 	}
 }
