@@ -1,7 +1,6 @@
 package com.hdfc.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -10,9 +9,6 @@ import com.hdfc.dto.User;
 
 @Component
 public class AuthService {
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private RestTemplate restTemplate;

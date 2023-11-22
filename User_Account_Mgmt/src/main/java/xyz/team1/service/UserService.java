@@ -44,7 +44,7 @@ public class UserService {
     public String getAccountNoForUsername(String username) throws RuntimeException {
         User user = userRepository.findByUsername(username).orElse(null);
         if (Objects.isNull(user)) {
-            throw new UsernameInvalidException("Username Ivalid!");
+            throw new UsernameInvalidException("Username Invalid!");
         }
         return user.getAccount();
     }

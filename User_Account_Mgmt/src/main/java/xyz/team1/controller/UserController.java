@@ -37,7 +37,7 @@ public class UserController {
 		try {
 			String jwtToken = authorizationHeader.substring(7);
 			String s = feign.validateToken(jwtToken);
-			if ("Token is valid".equals(s)) {
+			if (Constants.tokenValidString.equals(s)) {
 				return userService.getAllUser();
 			}
 			throw new Exception(Constants.tokenInvalidString);
