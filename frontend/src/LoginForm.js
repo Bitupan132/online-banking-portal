@@ -28,7 +28,6 @@ const LoginForm = ({ onToggleForm }) => {
         state: { username: loginData.username, token: response.data },
       });
     } catch (error) {
-      console.error(error.message);
       setErrorMessage('Invalid credentials. Please try again.');
     }
   };

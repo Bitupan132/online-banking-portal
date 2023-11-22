@@ -38,9 +38,9 @@ public class AccountController {
 			if (Constants.tokenValidString.equals(s)) {
 				return accountService.getAll();
 			}
-			throw new Exception("Token is not valid");
-		} catch (Exception e) {
-			throw new Exception("Token is not valid");
+			throw new Exception(Constants.tokenInvalidString);
+		}catch(Exception e) {
+			throw new Exception(e.getLocalizedMessage());
 		}
 
 	}
@@ -54,15 +54,15 @@ public class AccountController {
 			if (Constants.tokenValidString.equals(s)) {
 				return accountService.addAccount(account);
 			}
-			throw new Exception("Token is not valid");
-		} catch (Exception e) {
-			throw new Exception("Token is not valid");
+			throw new Exception(Constants.tokenInvalidString);
+		}catch(Exception e) {
+			throw new Exception(e.getLocalizedMessage());
 		}
 
 	}
 
 	@GetMapping("/getAccountForUsername/{username}")
-    private Account getAccountForUsername(@PathVariable String username,
+    private Object getAccountForUsername(@PathVariable String username,
     		@RequestHeader("Authorization") String authorizationHeader) throws Exception {
 		try {
 			String jwtToken = authorizationHeader.substring(7);
@@ -70,16 +70,15 @@ public class AccountController {
 			if (Constants.tokenValidString.equals(s)) 
 			{
 				try {
-					Account account = accountService.getAccountForUsername(username);
-		            return account;
+					return accountService.getAccountForUsername(username);
 				}catch(Exception e) {
 					throw new Exception("Error fetching Account Details");
 				}
 			}
-				throw new Exception("Token is not valid");
-			}catch (Exception e) {
-	            throw new Exception("Token is not valid");
-        }
+			return Constants.tokenInvalidString;
+		}catch(Exception e) {
+			throw new Exception(e.getLocalizedMessage());
+		}
 
     }
 
@@ -99,13 +98,13 @@ public class AccountController {
 							accountService.updateBalanceForTransaction(senderAccountNo, receiverAccountNo, transferAmount);
 							return ResponseEntity.ok("Balance updated successfully!");
 						} catch (Exception e) {
-							return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-									.body("Error updating balance. " + e.getLocalizedMessage());
+							throw new Exception(e.getLocalizedMessage());
 						}
 					}
-					throw new Exception("Token is not valid");
+					throw new Exception(Constants.tokenInvalidString);
 				} catch (Exception e) {
-					throw new Exception("Token is not valid");
+					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+									.body(e.getLocalizedMessage());
 				}
 		
 	}

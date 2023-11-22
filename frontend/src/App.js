@@ -10,6 +10,7 @@ import AccountInfo from './AccountInfo';
 import TransactionForm from './TransactionForm';
 import ViewTransaction from './ViewTransaction';
 import LoanApplication from './LoanApplication';
+import ViewLoan from './ViewLoan';
 
 const App = () => {
   return (
@@ -22,8 +23,8 @@ const App = () => {
     <Route path="/account" element={<AccountInfo />}></Route>
     <Route path="/make_transaction" element={<TransactionForm />}></Route>
     <Route path="/view_transaction" element={<ViewTransaction />}></Route>
-    <Route path="/applyloan" element={<LoanApplication />}></Route>
-    
+    <Route path="/apply_loan" element={<LoanApplication />}></Route>
+    <Route path="/view_loan" element={<ViewLoan />}></Route>
 
     
   </Routes>

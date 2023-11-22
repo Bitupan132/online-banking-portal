@@ -14,10 +14,9 @@ const SignupForm = ({ onToggleForm }) => {
   const handleSignupSubmit = (e) => {
     e.preventDefault();
     console.log('Signup submitted:', signupData);
-    // Add authentication logic here (connect to backend)
     axios.post(signup_endpoint, { account: signupData.account, username: signupData.username, password: signupData.password })
-      .then((res)=>console.log(res.data))
-      .catch((e) => console.error(e));
+      .then((res)=>alert(res.data))
+      .catch((e) => alert(e.response.data))
   };
 
   return (

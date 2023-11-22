@@ -19,28 +19,34 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User addUser(User user) {
-        return userRepository.save(user);
+    public String addUser(User user) {
+        User userDb = userRepository.findByUsername(user.getUsername()).orElse(null);
+        if (Objects.isNull(userDb)) {
+            userRepository.save(user);
+            return "User Registered Successfully";
+        }
+        return "Username: " + user.getUsername() + " Already Taken";
     }
-    
+
     public boolean checkUser(String account) {
-    	User user = userRepository.findByAccount(account).orElse(null);
-    	if(user==null) {
-    		return true;
-    	}else {
-    		return false;
-    	}
+        User user = userRepository.findByAccount(account).orElse(null);
+        if (user == null) {
+            return true;
+        } else {
+            return false;
+        }
     }
-    
+
     public User getUser(String username) {
-    	return userRepository.findByUsername(username).orElse(null);
+        return userRepository.findByUsername(username).orElse(null);
     }
-    public String getAccountNoForUsername(String username) throws RuntimeException{
+
+    public String getAccountNoForUsername(String username) throws RuntimeException {
         User user = userRepository.findByUsername(username).orElse(null);
-        if(Objects.isNull(user)){
+        if (Objects.isNull(user)) {
             throw new UsernameInvalidException("Username Ivalid!");
         }
         return user.getAccount();
     }
-    
+
 }

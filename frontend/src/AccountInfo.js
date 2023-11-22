@@ -33,7 +33,9 @@ const AccountInfo = () => {
           balance: response.data.balance
         }));
       } catch (error) {
-        console.error(error.message);
+        alert(error.response.data)
+        console.log(error.message)
+        // error.response.data==="INVALID_TOKEN"
         // Handle the error (e.g., show a message to the user)
       }
 
@@ -46,12 +48,13 @@ const AccountInfo = () => {
       state: {
         senderAccountNo: accountData.accountNo, 
         token: token,
+        username:username,
       },
     });
   }
 
   const applyLoan = ()=>{
-    navigate('/applyLoan',{
+    navigate('/apply_loan',{
       state:{
         bankAccountNo: accountData.accountNo,
         token:token
@@ -69,9 +72,10 @@ const AccountInfo = () => {
   }
 
   const viewLoan = ()=>{
-    navigate('/viewloan',{
+    navigate('/view_loan',{
       state:{
         bankAccountNo: accountData.accountNo,
+        token:token
       },
     });
   }
