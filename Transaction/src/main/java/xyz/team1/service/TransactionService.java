@@ -10,7 +10,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -34,42 +33,44 @@ public class TransactionService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<String> addTransaction(Transaction transaction,String token) {
-        try {
-            updateBalanceForTransaction(transaction.getSenderAccountNo(), transaction.getReceiverAccountNo(),
-                    transaction.getAmount(),token);
+    public String addTransaction(Transaction transaction, String token) {
+            ResponseEntity<String> response = updateBalanceForTransaction(transaction.getSenderAccountNo(),
+                    transaction.getReceiverAccountNo(),
+                    transaction.getAmount(), token);
+            if (response.getStatusCode().is4xxClientError()) {
+                return response.getBody();
+            }
+            if (response.getStatusCode().is5xxServerError()) {
+                return response.getBody();
+            }
             LocalDateTime time = LocalDateTime.now();
             transaction.setTransactionDateTime(time);
             transactionRepository.save(transaction);
-            return ResponseEntity.ok("Transaction successful!");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Transaction Failed! " + e.getMessage());
-        }
+            return "Transaction successful!";
     }
 
-    public void updateBalanceForTransaction(String senderAccountNo, String receiverAccountNo,
-            Double transferAmount,String token) {
+    public ResponseEntity<String> updateBalanceForTransaction(String senderAccountNo, String receiverAccountNo,
+            Double transferAmount, String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization","Bearer "+token);
+        headers.set("Authorization", "Bearer " + token);
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("senderAccountNo", senderAccountNo);
         requestBody.put("receiverAccountNo", receiverAccountNo);
         requestBody.put("transferAmount", transferAmount);
-        
-        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-        restTemplate.postForEntity(Constants.userAccountMgmtUrl + "/account/updateBalanceForTransaction", requestEntity,
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+        return restTemplate.postForEntity(Constants.userAccountMgmtUrl + "/account/updateBalanceForTransaction",
+                requestEntity,
                 String.class);
     }
 
-    public List<Transaction> getTransactionForAccount(String AccountNo){
-    	
-    	List<Transaction> trans = transactionRepository.findBySenderAccountNo(AccountNo);
-    	trans.addAll(transactionRepository.findByReceiverAccountNo(AccountNo));
-    	Collections.sort(trans, Comparator.comparing(Transaction::getTransactionDateTime));
-    	
-    	return trans;
+    public List<Transaction> getTransactionForAccount(String AccountNo) {
+
+        List<Transaction> trans = transactionRepository.findBySenderAccountNo(AccountNo);
+        trans.addAll(transactionRepository.findByReceiverAccountNo(AccountNo));
+        Collections.sort(trans, Comparator.comparing(Transaction::getTransactionDateTime).reversed());
+
+        return trans;
     }
 }

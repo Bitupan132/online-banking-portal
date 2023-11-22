@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import xyz.team1.constants.Constants;
 import xyz.team1.exceptions.AccountNotFoundException;
 import xyz.team1.exceptions.InsufficientBalanceException;
+import xyz.team1.interceptor.FeignClientInterface;
 import xyz.team1.model.Account;
 import xyz.team1.repository.AccountRepository;
 
@@ -19,6 +21,9 @@ public class AccountService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+	private FeignClientInterface feign;
 
     public List<Account> getAll() {
         return accountRepository.findAll();
@@ -69,5 +74,13 @@ public class AccountService {
         String accountNo = userService.getAccountNoForUsername(username);
         return accountRepository.findByAccountNo(accountNo).orElse(null);
     }
-
+    
+    public boolean validateToken(String authorizationHeader) {
+		String jwtToken = authorizationHeader.substring(7);
+		String validationStatus = feign.validateToken(jwtToken);
+		if(Constants.tokenValidString.equals(validationStatus)){
+			return true;
+		}
+		return false;
+	}
 }

@@ -3,7 +3,6 @@ package xyz.team1.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,9 +38,9 @@ public class TransactionController {
 		{
 			return transactionService.getAllTransaction();
 		}
-			throw new Exception("Token is not valid");
+			throw new Exception(Constants.tokenInvalidString);
 		}catch(Exception e) {
-			throw new Exception("Token is not valid");
+			throw new Exception(e.getLocalizedMessage());
 		}
         
     }
@@ -55,27 +54,27 @@ public class TransactionController {
 		{
 			return transactionService.getTransactionForAccount(accountNo);
 		}
-			throw new Exception("Token is not valid");
+			throw new Exception(Constants.tokenInvalidString);
 		}catch(Exception e) {
-			throw new Exception("Token is not valid");
+			throw new Exception(e.getLocalizedMessage());
 		}
         
     }
 
     @PostMapping(value = "/add")
-    private ResponseEntity<String> addTransaction(@RequestBody Transaction transaction,@RequestHeader("Authorization") String authorizationHeader) throws Exception {
+    private String addTransaction(@RequestBody Transaction transaction,@RequestHeader("Authorization") String authorizationHeader) throws Exception {
 		try {
 		String jwtToken = authorizationHeader.substring(7);
 		String s = feign.validateToken(jwtToken);
 		if (Constants.tokenValidString.equals(s)) 
 		{
 			return transactionService.addTransaction(transaction,jwtToken);
+			
 		}
-			throw new Exception("Token is not valid");
+		return Constants.tokenInvalidString;
 		}catch(Exception e) {
-			throw new Exception("Token is not valid");
+			return "Transaction Failed! " + e.getLocalizedMessage().substring(4);
 		}
-        
         
     }
 }

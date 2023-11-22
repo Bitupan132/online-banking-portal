@@ -25,53 +25,65 @@ const AccountInfo = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setAccountData(prevState => ({
-          ...prevState,
-          name: response.data.fullName,
-          accountNo: response.data.accountNo,
-          mobile: response.data.phoneNo,
-          balance: response.data.balance
-        }));
+        if (response.data === "INVALID_TOKEN") {
+          alert("Session Expired. Please Login again.");
+          navigate('/');
+        } 
+        else if (response.data === "ACCOUNT_DOES_NOT_EXIST"){
+          alert("Account Does not Exist. Please Login again.");
+          navigate('/');
+        }
+        else {
+          setAccountData(prevState => ({
+            ...prevState,
+            name: response.data.fullName,
+            accountNo: response.data.accountNo,
+            mobile: response.data.phoneNo,
+            balance: response.data.balance
+          }));
+        }
+
       } catch (error) {
-        console.error(error.message);
-        // Handle the error (e.g., show a message to the user)
+        alert(error.response.data)
       }
 
     };
     fetchUserDetails();
   }, [username, token]);
 
-  const goToMakeTranasaction = ()=>{
+  const goToMakeTranasaction = () => {
     navigate('/make_transaction', {
       state: {
-        senderAccountNo: accountData.accountNo, 
+        senderAccountNo: accountData.accountNo,
         token: token,
+        username: username,
       },
     });
   }
 
-  const applyLoan = ()=>{
-    navigate('/applyLoan',{
-      state:{
+  const applyLoan = () => {
+    navigate('/apply_loan', {
+      state: {
         bankAccountNo: accountData.accountNo,
-        token:token
+        token: token
       },
     });
   }
 
-  const viewTransaction = ()=>{
-    navigate('/view_transaction',{
-      state:{
+  const viewTransaction = () => {
+    navigate('/view_transaction', {
+      state: {
         currentAccountNo: accountData.accountNo,
-        token:token
+        token: token
       },
     });
   }
 
-  const viewLoan = ()=>{
-    navigate('/viewloan',{
-      state:{
+  const viewLoan = () => {
+    navigate('/view_loan', {
+      state: {
         bankAccountNo: accountData.accountNo,
+        token: token
       },
     });
   }
@@ -109,7 +121,7 @@ const AccountInfo = () => {
     <div className="account-info-container">
       <h2>Account Information</h2>
       <form className="account-form">
-      <div>
+        <div>
           <strong><label>Name: </label></strong>
           <span>{accountData.name}</span>
         </div>
@@ -133,7 +145,7 @@ const AccountInfo = () => {
         </div>
         <br />
 
-        
+
 
         <div className="button-container">
 
@@ -143,7 +155,7 @@ const AccountInfo = () => {
 
           <button type="button" onClick={applyLoan} key="apply-Loan">Apply Loan</button>
 
-         <button type="button" onClick={viewLoan} key="view-loan">View Loan</button>
+          <button type="button" onClick={viewLoan} key="view-loan">View Loan</button>
 
         </div>
       </form>

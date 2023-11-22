@@ -269,23 +269,23 @@ button:last-child {
   margin-right: 0;
 }
 
-.viewed-loans {
+.loan-history {
   margin-top: 20px;
 }
 
-.viewed-loans ul {
+.loan-history ul {
   list-style: none;
   padding: 0;
 }
 
-.viewed-loans li {
+.loan-history li {
   border: 1px solid #ddd;
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
 }
 
-.viewed-loans span {
+.loan-history span {
   display: block;
   margin-bottom: 5px;
 }

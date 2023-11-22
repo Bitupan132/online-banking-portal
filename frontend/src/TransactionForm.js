@@ -1,13 +1,14 @@
 // TransactionForm.js
 import React, { useState } from 'react';
 import './index.css';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const TransactionForm = () => {
   const transactionServiceUrl = "http://localhost:8081/transaction";
+  const navigate = useNavigate();
   const location = useLocation();
-  const { senderAccountNo, token } = location.state || {};
+  const { senderAccountNo, token, username } = location.state || {};
   const [transactionData, setTransactionData] = useState({
     receiverAccountNo: '',
     amount: '',
@@ -39,8 +40,19 @@ const TransactionForm = () => {
           Authorization: `Bearer ${token}`,
         },
       })
-        .then(res => alert(res.data))
-        .catch((e) => alert(e.message));
+        .then(res => {
+          if (res.data === "INVALID_TOKEN") {
+            alert("Session Expired. Please Login again.");
+            navigate('/');
+          }
+          else {
+            alert(res.data)
+            navigate('/account', {
+              state: { username, token },
+            });
+          }
+        })
+        .catch((error) => alert(error.response.data));
       handleReset();
     } else {
       alert('Please enter both all required information.');

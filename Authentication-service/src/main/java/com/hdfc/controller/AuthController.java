@@ -43,10 +43,8 @@ public class AuthController {
 			authenticate = authenticationManager.
 				authenticate(new UsernamePasswordAuthenticationToken(
 						authRequest.getUsername(), authRequest.getPassword()));
-			System.out.println(authenticate.isAuthenticated());
 		} catch (Exception e) {
 			System.out.println(e.getLocalizedMessage());
-			// return e.getLocalizedMessage();
 			throw new Exception(e.getLocalizedMessage());
 		}
 		
@@ -64,11 +62,8 @@ public class AuthController {
 			authService.validateToken(token);
 			 return Constants.tokenValidString;
 		} catch (Exception e) {
-			e.printStackTrace();
-			return "Token is not validated due to "+e.getMessage();
+			return Constants.tokenInvalidString;
 		}
 		
 	}
-	
-	
 }

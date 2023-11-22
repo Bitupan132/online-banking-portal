@@ -22,94 +22,90 @@ import xyz.team1.service.LoanService;
 @RequestMapping("/loan")
 @CrossOrigin("*")
 public class LoanController {
-	
+
 	@Autowired
 	private LoanService loanService;
-	
+
 	@Autowired
 	private FeignClientInterface feign;
-	
+
 	@GetMapping("/getAllLoans")
 	private List<Loan> getAllLoans(@RequestHeader("Authorization") String authorizationHeader) throws Exception {
 		try {
-		String jwtToken = authorizationHeader.substring(7);
-		String s = feign.validateToken(jwtToken);
-		if (Constants.tokenValidString.equals(s)) 
-		{
-			return loanService.getAllLoans();
+			String jwtToken = authorizationHeader.substring(7);
+			String s = feign.validateToken(jwtToken);
+			if (Constants.tokenValidString.equals(s)) {
+				return loanService.getAllLoans();
+			}
+			throw new Exception(Constants.tokenInvalidString);
+		} catch (Exception e) {
+			throw new Exception(e.getLocalizedMessage());
 		}
-			throw new Exception("Token is not valid");
-		}catch(Exception e) {
-			throw new Exception("Token is not valid");
-		}
-		
+
 	}
-	
+
 	@PostMapping("/applyForLoan")
-	private Loan applyLoan(@RequestBody Loan loan,@RequestHeader("Authorization") String authorizationHeader) throws Exception {
+	private Loan applyLoan(@RequestBody Loan loan, @RequestHeader("Authorization") String authorizationHeader)
+			throws Exception {
 		try {
-		String jwtToken = authorizationHeader.substring(7);
-		String s = feign.validateToken(jwtToken);
-		if (Constants.tokenValidString.equals(s)) 
-		{
-			return loanService.applyForLoan(loan);
+			String jwtToken = authorizationHeader.substring(7);
+			String s = feign.validateToken(jwtToken);
+			if (Constants.tokenValidString.equals(s)) {
+				return loanService.applyForLoan(loan);
+			}
+			throw new Exception(Constants.tokenInvalidString);
+		} catch (Exception e) {
+			throw new Exception(e.getLocalizedMessage());
 		}
-			throw new Exception("Token is not valid");
-		}catch(Exception e) {
-			throw new Exception("Token is not valid");
-		}
-		
+
 	}
-	
+
 	@GetMapping("/getLoanById/{loanId}")
-	private Loan getLoanById(@PathVariable Long loanId,@RequestHeader("Authorization") String authorizationHeader) throws Exception {
+	private Loan getLoanById(@PathVariable Long loanId, @RequestHeader("Authorization") String authorizationHeader)
+			throws Exception {
 		try {
-		String jwtToken = authorizationHeader.substring(7);
-		String s = feign.validateToken(jwtToken);
-		if (Constants.tokenValidString.equals(s)) 
-		{
-			return loanService.getLoanById(loanId);
+			String jwtToken = authorizationHeader.substring(7);
+			String s = feign.validateToken(jwtToken);
+			if (Constants.tokenValidString.equals(s)) {
+				return loanService.getLoanById(loanId);
+			}
+			throw new Exception(Constants.tokenInvalidString);
+		} catch (Exception e) {
+			throw new Exception(e.getLocalizedMessage());
 		}
-			throw new Exception("Token is not valid");
-		}catch(Exception e) {
-			throw new Exception("Token is not valid");
-		}
-		
-		
+
 	}
-	
+
 	@DeleteMapping("/deleteLoan/{loanId}")
-	private void deleteLoan(@PathVariable Long loanId,@RequestHeader("Authorization") String authorizationHeader) throws Exception {
+	private void deleteLoan(@PathVariable Long loanId, @RequestHeader("Authorization") String authorizationHeader)
+			throws Exception {
 		try {
-		String jwtToken = authorizationHeader.substring(7);
-		String s = feign.validateToken(jwtToken);
-		if (Constants.tokenValidString.equals(s)) 
-		{
-			loanService.delete(loanId);
+			String jwtToken = authorizationHeader.substring(7);
+			String s = feign.validateToken(jwtToken);
+			if (Constants.tokenValidString.equals(s)) {
+				loanService.delete(loanId);
+			}
+			throw new Exception(Constants.tokenInvalidString);
+		} catch (Exception e) {
+			throw new Exception(e.getLocalizedMessage());
 		}
-			throw new Exception("Token is not valid");
-		}catch(Exception e) {
-			throw new Exception("Token is not valid");
-		}
-		
-		 
+
 	}
-	
-	
-	@GetMapping("/findAllByAccountNo/{accountNo}")
-	private List<Loan> findAllByAccountNo(@PathVariable String accountNo,@RequestHeader("Authorization") String authorizationHeader) throws Exception {
+
+	@GetMapping("/getAllByAccountNo/{accountNo}")
+	private List<Loan> findAllByAccountNo(@PathVariable String accountNo,
+			@RequestHeader("Authorization") String authorizationHeader) throws Exception {
 		try {
-		String jwtToken = authorizationHeader.substring(7);
-		String s = feign.validateToken(jwtToken);
-		if (Constants.tokenValidString.equals(s)) 
-		{
-			return loanService.findAllByAccountNo(accountNo);
+			String jwtToken = authorizationHeader.substring(7);
+			String s = feign.validateToken(jwtToken);
+			if (Constants.tokenValidString.equals(s)) {
+				return loanService.findAllByAccountNo(accountNo);
+			}
+			throw new Exception(Constants.tokenInvalidString);
+		} catch (Exception e) {
+			throw new Exception(e.getLocalizedMessage());
 		}
-			throw new Exception("Token is not valid");
-		}catch(Exception e) {
-			throw new Exception("Token is not valid");
-		}
-		
+
 	}
 
 }
