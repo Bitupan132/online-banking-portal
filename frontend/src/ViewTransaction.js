@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './index.css';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const ViewTransaction = () => {
     const transactionServiceUrl = "http://localhost:8081/transaction";
     const location = useLocation();
+    const navigate = useNavigate();
     const { currentAccountNo, token } = location.state || {};
     const [transactionHistory, setTransactionHistory] = useState([]);
 
@@ -17,10 +18,14 @@ const ViewTransaction = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                setTransactionHistory(response.data);
+                if (response.data === "INVALID_TOKEN") {
+                    alert("Session Expired. Please Login again.");
+                    navigate('/');
+                }
+                else { setTransactionHistory(response.data); }
+
             } catch (error) {
-                console.error(error.message);
-                //handle error
+                alert(error.message);
             }
 
         };
@@ -36,8 +41,8 @@ const ViewTransaction = () => {
             <ul>
                 {transactionHistory.map((transaction) => (
                     <li key={transaction.transactionId}>
-                        <span>Transaction Type: {currentAccountNo===transaction.senderAccountNo?"DEBIT":"CREDIT"}</span>
-                        <span>Account No: {currentAccountNo!==transaction.senderAccountNo?transaction.senderAccountNo:transaction.receiverAccountNo}</span>
+                        <span>Transaction Type: {currentAccountNo === transaction.senderAccountNo ? "DEBIT" : "CREDIT"}</span>
+                        <span>Account No: {currentAccountNo !== transaction.senderAccountNo ? transaction.senderAccountNo : transaction.receiverAccountNo}</span>
                         <span>Amount: ${transaction.amount}</span>
                         <span>Summary: {transaction.summary}</span>
                         <span>Transaction Time: {transaction.transactionDateTime}</span>
