@@ -59,9 +59,8 @@ public class AccountController {
 	}
 
 	@PostMapping("/updateBalanceForTransaction")
-	private ResponseEntity<String> updateBalanceForTransaction(@RequestBody Map<String, Object> requestData,
-			@RequestHeader("Authorization") String authorizationHeader)
-			throws Exception {
+	private Object updateBalanceForTransaction(@RequestBody Map<String, Object> requestData,
+			@RequestHeader("Authorization") String authorizationHeader) {
 		if (accountService.validateToken(authorizationHeader)) {
 			String senderAccountNo = requestData.get("senderAccountNo").toString();
 			String receiverAccountNo = requestData.get("receiverAccountNo").toString();
@@ -76,5 +75,7 @@ public class AccountController {
 			}
 		}
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Constants.tokenInvalidString);
+
 	}
+
 }

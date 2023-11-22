@@ -52,7 +52,7 @@ const TransactionForm = () => {
             });
           }
         })
-        .catch((error) => alert(error.response.data));
+        .catch((error) => {console.log("error");alert(error.response.data)});
       handleReset();
     } else {
       alert('Please enter both all required information.');
