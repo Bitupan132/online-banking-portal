@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import '../css/index.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useToken } from './TokenProvider';
 
 const TransactionForm = () => {
   const transactionServiceUrl = "http://localhost:8081/transaction";
   const navigate = useNavigate();
   const location = useLocation();
-  const { senderAccountNo, token, username } = location.state || {};
+  const { senderAccountNo, username } = location.state || {};
+  const { token, updateToken } = useToken();
   const [transactionData, setTransactionData] = useState({
     receiverAccountNo: '',
     amount: '',
@@ -47,25 +49,33 @@ const TransactionForm = () => {
           else {
             alert(res.data)
             navigate('/account', {
-              state: { username, token },
+              state: { username },
             });
           }
         })
-        .catch((error) => {console.log("error");alert(error.response.data)});
+        .catch(error => {
+          if (error.response.data.status === 500) {
+            alert("Error Occured. Please Login again.");
+            navigate('/');
+
+          }
+          else {
+            alert(error.message);
+          }
+        });
       handleReset();
     } else {
       alert('Please enter both all required information.');
     }
   };
 
-  const returnHome =()=>{
+  const returnHome = () => {
     navigate('/account', {
-        state: {
-          token: token,
-          username: username,
-        },
-      });
-}
+      state: {
+        username: username,
+      },
+    });
+  }
 
   return (
     <div className='card'>
@@ -106,7 +116,7 @@ const TransactionForm = () => {
         </div>
       </form>
       <div>
-          <button onClick={returnHome} style={{  backgroundColor: 'red',margin:'10px' }}>Cancel</button>
+        <button onClick={returnHome} style={{ backgroundColor: 'red', margin: '10px' }}>Cancel</button>
       </div>
     </div>
   );

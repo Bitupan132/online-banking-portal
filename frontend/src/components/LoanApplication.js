@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import '../css/index.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useToken } from './TokenProvider';
 
 
 const LoanApplication = () => {
   const loanServiceUrl = "http://localhost:8012/loan";
   const location = useLocation();
   const navigate = useNavigate();
-  const { bankAccountNo, token, username } = location.state || {};
+  const { bankAccountNo, username } = location.state || {};
+  const { token, updateToken } = useToken();
   const [selectedLoan, setSelectedLoan] = useState('');
   let loanType = 0;
   const loanOptions = ['Personal Loan', 'Vehicle Loan', 'Home Loan'];
@@ -51,7 +53,6 @@ const LoanApplication = () => {
   const returnHome =()=>{
     navigate('/account', {
         state: {
-          token: token,
           username: username,
         },
       });
@@ -76,11 +77,21 @@ const LoanApplication = () => {
           else {
             alert("Loan Applied Successfuilly. Loan Application id:"+ res.data.loanId)
             navigate('/account', {
-              state: { username, token },
+              state: { username },
             });
           }
         })
-        .catch((e) => alert(e.message));
+        .catch( error=> {
+          if (error.response.data.status === 500) {
+            alert("Error Occured. Please Login again.");
+            navigate('/');
+  
+          }
+          else {
+            alert(error.message);
+          }
+        });
+
       handleReset();
     } else {
       alert('Please enter all required information');

@@ -2,21 +2,22 @@ import React, { useEffect, useState } from 'react';
 import '../css/ViewTransaction.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useToken } from './TokenProvider';
 
 const ViewTransaction = () => {
     const transactionServiceUrl = "http://localhost:8081/transaction";
     const location = useLocation();
     const navigate = useNavigate();
-    const { currentAccountNo, token, username } = location.state || {};
+    const { currentAccountNo, username } = location.state || {};
+    const { token, updateToken } = useToken();
     const [transactionHistory, setTransactionHistory] = useState([]);
 
-    const returnHome =()=>{
+    const returnHome = () => {
         navigate('/account', {
             state: {
-              token: token,
-              username: username,
+                username: username,
             },
-          });
+        });
     }
 
     useEffect(() => {
@@ -34,9 +35,15 @@ const ViewTransaction = () => {
                 else { setTransactionHistory(response.data); }
 
             } catch (error) {
-                alert(error.message);
-            }
+                if (error.response.data.status === 500) {
+                    alert("Error Occured. Please Login again.");
+                    navigate('/');
 
+                }
+                else {
+                    alert(error.message)
+                }
+            }
         };
         fetchTransactions();
     }, [currentAccountNo, token]);

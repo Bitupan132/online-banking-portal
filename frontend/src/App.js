@@ -9,23 +9,25 @@ import TransactionForm from './components/TransactionForm';
 import ViewTransaction from './components/ViewTransaction';
 import LoanApplication from './components/LoanApplication';
 import ViewLoan from './components/ViewLoan';
+import { TokenProvider } from './components/TokenProvider';
 
 const App = () => {
   return (
-  
+    <TokenProvider>
       <div >
       
-      <Routes>
-        <Route path="/" element={<LoginForm />}></Route>
-        <Route path="/signup" element={<SignupForm />}></Route>
-        <Route path="/account" element={<AccountInfo />}></Route>
-        <Route path="/make_transaction" element={<TransactionForm />}></Route>
-        <Route path="/view_transaction" element={<ViewTransaction />}></Route>
-        <Route path="/apply_loan" element={<LoanApplication />}></Route>
-        <Route path="/view_loan" element={<ViewLoan />}></Route>
-      </Routes>
+        <Routes>
+          <Route path="/" element={<LoginForm />}></Route>
+          <Route path="/signup" element={<SignupForm />}></Route>
+          <Route path="/account" element={<AccountInfo />}></Route>
+          <Route path="/make_transaction" element={<TransactionForm />}></Route>
+          <Route path="/view_transaction" element={<ViewTransaction />}></Route>
+          <Route path="/apply_loan" element={<LoanApplication />}></Route>
+          <Route path="/view_loan" element={<ViewLoan />}></Route>
+        </Routes>
     
-    </div>
+      </div>
+    </TokenProvider>
   );
 };
 
