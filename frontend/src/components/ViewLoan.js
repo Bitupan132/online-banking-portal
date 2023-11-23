@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import '../css/viewLoan.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useToken } from './TokenProvider';
 
 const ViewLoan = () => {
     const loanServiceUrl = "http://localhost:8012/loan";
     const location = useLocation();
     const navigate = useNavigate();
-    const { bankAccountNo, token, username } = location.state || {};
+    const { bankAccountNo, username } = location.state || {};
+    const { token, updateToken } = useToken();
     const [loanHistory, setLoanHistory] = useState([]);
 
     const deleteLoan = async (loanId) => {
@@ -31,7 +33,6 @@ const ViewLoan = () => {
     const returnHome = () => {
         navigate('/account', {
             state: {
-                token: token,
                 username: username,
             },
         });
@@ -50,8 +51,15 @@ const ViewLoan = () => {
                 setLoanHistory(response.data);
             }
         } catch (error) {
-            console.error(error.message);
-        }
+            if (error.response.data.status === 500) {
+              alert("Error Occured. Please Login again.");
+              navigate('/');
+    
+            }
+            else {
+              alert(error.message)
+            }
+          }
 
     };
     const getStatusColor = (loanStatus) => {
@@ -86,12 +94,7 @@ const ViewLoan = () => {
                                 <span style={{ color: getStatusColor(loan.loanStatus) }}>{loan.loanStatus}</span>
                             </span>
                             <span>Loan Application Date: {loan.loanApplicationDateTime}</span>
-                            {/* <button
-                                className="delete-loan-button"
-                                onClick={() => { deleteLoan(loan.loanId) }}
-                            >
-                                Delete Loan
-                            </button> */}
+                           
                             {['PENDING', 'REJECTED'].includes(loan.loanStatus) && (
                                 <button
                                     className="delete-loan-button"

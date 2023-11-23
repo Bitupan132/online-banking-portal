@@ -2,13 +2,14 @@ import React, { useState} from 'react';
 import { Link, useNavigate} from "react-router-dom";
 import  axios  from 'axios';
 import '../css/login.css'
+import { useToken } from './TokenProvider';
 
 const LoginForm = ({ onToggleForm }) => {
    
   const postTokenEndpoint= "http://localhost:8989/auth/token";
 
   const navigate = useNavigate();
-
+  const { token, updateToken } = useToken();
   const [loginData, setLoginData] = useState({ username: '', password: '' });
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -19,13 +20,13 @@ const LoginForm = ({ onToggleForm }) => {
   const login = async (loginData) => {
     try {
       if(loginData.username!=='' && loginData.password!==''){
-      const response = await axios.post(postTokenEndpoint, {
-        username: loginData.username,
-        password: loginData.password,
+        const response = await axios.post(postTokenEndpoint, {
+          username: loginData.username,
+          password: loginData.password,
       });
-  
+        await updateToken(response.data);
       navigate('/account', {
-        state: { username: loginData.username, token: response.data },
+        state: { username: loginData.username},
       });
     }else{
       alert("Please enter the details");
