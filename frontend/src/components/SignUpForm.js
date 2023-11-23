@@ -15,7 +15,10 @@ const SignupForm = ({ onToggleForm }) => {
     e.preventDefault();
     console.log('Signup submitted:', signupData);
     axios.post(signup_endpoint, { account: signupData.account, username: signupData.username, password: signupData.password })
-      .then((res)=>alert(res.data))
+      .then((res) => {
+        alert(res.data);
+        setSignupData({ username: '', password: '', account: '' });
+      })
       .catch((e) => alert(e.response.data))
   };
 

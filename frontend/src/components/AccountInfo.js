@@ -8,6 +8,8 @@ const AccountInfo = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { username, token } = location.state || {};
+  // const [pageToken, setToken] = useState(token);
+  
   const [accountData, setAccountData] = useState({
     name: '',
     accountNo: '',
@@ -17,7 +19,7 @@ const AccountInfo = () => {
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      let response = {};
+      
       try {
         const response = await axios.get(getUserDetailsUrl + username, {
           headers: {
@@ -91,6 +93,7 @@ const AccountInfo = () => {
   }
 
   const handleLogout = () => {
+    // setToken('');
     navigate('/');
   }
 

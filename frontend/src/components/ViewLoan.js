@@ -10,7 +10,7 @@ const ViewLoan = () => {
     const { bankAccountNo, token, username } = location.state || {};
     const [loanHistory, setLoanHistory] = useState([]);
 
-    const deleteLoan = async(loanId) => {
+    const deleteLoan = async (loanId) => {
         try {
             const response = await axios.delete(`${loanServiceUrl}/deleteLoan/${loanId}`, {
                 headers: {
@@ -20,7 +20,7 @@ const ViewLoan = () => {
             if (response.data === "INVALID_TOKEN") {
                 alert("Session Expired. Please Login again.");
                 navigate('/');
-            }else{
+            } else {
                 fetchLoan();
             }
         } catch (error) {
@@ -28,13 +28,13 @@ const ViewLoan = () => {
         }
     };
 
-    const returnHome =()=>{
+    const returnHome = () => {
         navigate('/account', {
             state: {
-              token: token,
-              username: username,
+                token: token,
+                username: username,
             },
-          });
+        });
     }
     const fetchLoan = async () => {
         try {
@@ -46,8 +46,8 @@ const ViewLoan = () => {
             if (response.data === "INVALID_TOKEN") {
                 alert("Session Expired. Please Login again.");
                 navigate('/');
-            }else{
-            setLoanHistory(response.data);
+            } else {
+                setLoanHistory(response.data);
             }
         } catch (error) {
             console.error(error.message);
@@ -63,7 +63,7 @@ const ViewLoan = () => {
             case 'APPROVED':
                 return 'green';
             default:
-                return 'black'; 
+                return 'black';
         }
     }
     useEffect(() => {
@@ -86,12 +86,20 @@ const ViewLoan = () => {
                                 <span style={{ color: getStatusColor(loan.loanStatus) }}>{loan.loanStatus}</span>
                             </span>
                             <span>Loan Application Date: {loan.loanApplicationDateTime}</span>
-                            <button
+                            {/* <button
                                 className="delete-loan-button"
-                                onClick={()=>{deleteLoan(loan.loanId)}}
+                                onClick={() => { deleteLoan(loan.loanId) }}
                             >
                                 Delete Loan
-                            </button>
+                            </button> */}
+                            {['PENDING', 'REJECTED'].includes(loan.loanStatus) && (
+                                <button
+                                    className="delete-loan-button"
+                                    onClick={() => { deleteLoan(loan.loanId) }}
+                                >
+                                    Delete Loan
+                                </button>
+                            )}
                         </li>
                     ))}
                 </ul>
